@@ -19,7 +19,7 @@ ansible:
 install:
 	sed -i '' -e "s/IP_ADDRESS/$$(cat terraform/ip_master.txt)/g" ansible/install/inventory.yaml
 	docker run --rm --name ansible -it -w /opt -v ${PWD}/ansible:/opt -v /Users/yangand/.aws:/root/.aws yangand/kubernetes_ansible \
-	ansible-playbook -i ./install/inventory.yaml ./install/install_remote_python.yaml ./install/push_control_files.yaml
+	ansible-playbook -i ./install/inventory.yaml ./install/install_remote_python.yaml ./install/copy_to_remote.yaml
 
 clean:
 	docker image prune -a

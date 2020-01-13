@@ -1,7 +1,7 @@
 - hosts: master
   become: yes
   tasks:
-    - command: kubeadm init
+    - command: kubeadm init --node-name master
     - shell:
         cmd: |
           mkdir /home/ubuntu/.kube
