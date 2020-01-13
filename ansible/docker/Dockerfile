@@ -1,0 +1,1 @@
+FROM yangand/kubernetes_terraform
