@@ -4,7 +4,10 @@
     - file:
         path: /etc/cni/net.d
         state: directory
+        owner: ubuntu
+        group: ubuntu
     - name: loopback
+      become: no
       shell:
         warn: no
         cmd: |
@@ -15,10 +18,3 @@
             "type": "loopback"
           }
           EOF
-    - file:
-        path: /etc/cni/net.d
-        recurse: yes
-        owner: ubuntu
-        group: ubuntu
-    - command: /opt/bin/kubectl delete -n kube-system deploy/coredns
-    - command: /opt/bin/kubectl taint nodes --all node-role.kubernetes.io/master-

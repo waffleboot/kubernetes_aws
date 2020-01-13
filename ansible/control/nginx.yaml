@@ -1,17 +1,3 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx
-spec:
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      hostNetwork: true
-      containers:
-        - name: nginx
-          image: nginx
+- hosts: master
+  tasks:
+    - command: /opt/bin/kubectl apply -f k8s/nginx.yaml
