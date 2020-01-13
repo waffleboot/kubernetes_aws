@@ -34,7 +34,7 @@ master:
 	ssh -o "StrictHostKeyChecking no" -i ~/.aws/id_master_rsa ubuntu@$(ip_master)
 
 worker:
-	ssh -o "StrictHostKeyChecking no" -i ~/.aws/id_master_rsa ubuntu@$(ip_worker)
+	ssh -o "StrictHostKeyChecking no" -i ~/.aws/id_worker_rsa ubuntu@$(ip_worker)
 
 clean:
 	docker image prune -a

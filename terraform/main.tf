@@ -73,6 +73,18 @@ resource "aws_security_group" "public" {
     from_port   = 2222
     to_port     = 2222
   }
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    protocol    = "tcp"
+    from_port   = 8000
+    to_port     = 8000
+  }
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    protocol    = "tcp"
+    from_port   = 8443
+    to_port     = 8443
+  }
   tags = {
     Name = "public"
   }
