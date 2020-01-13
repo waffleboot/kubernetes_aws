@@ -19,8 +19,4 @@ RUN gpg --verify terraform_${VER}_SHA256SUMS.sig terraform_${VER}_SHA256SUMS ; \
 
 RUN unzip terraform_${VER}_linux_amd64.zip -d /usr/local/bin/ && rm -r /tmp/terraform
 
-RUN useradd -m terraform
-
-USER terraform
-
 WORKDIR /

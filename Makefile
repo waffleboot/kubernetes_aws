@@ -11,7 +11,10 @@ test_ansible:
 	docker run --rm -it yangand/kubernetes_ansible
 
 terraform:
-	docker run --rm --name terraform -it -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/home/terraform/.aws yangand/kubernetes_terraform
+	docker run --rm --name terraform -it -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform
+
+ansible:
+	docker run --rm --name ansible -it -w /opt -v ${PWD}/ansible:/opt yangand/kubernetes_ansible
 
 clean:
 	docker image prune -a
