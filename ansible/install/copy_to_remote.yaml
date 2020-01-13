@@ -1,9 +1,12 @@
 - hosts: control
   tasks:
-    - name: copy
-      synchronize:
-        src: ../control
+    - synchronize:
+        src: /ansible/control
         dest: ~/
         recursive: yes
         delete: yes
         mode: push
+    - copy:
+        src: /terraform/ip_worker.txt
+        dest: ~/ip_worker.txt
+    

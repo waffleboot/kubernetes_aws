@@ -4,3 +4,5 @@ terraform/terraform.tfstate
 *.retry
 *.tfstate.backup
 terraform/ip_master.txt
+terraform/ip_worker.txt
+
