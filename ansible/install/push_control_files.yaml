@@ -1,7 +1,5 @@
 - hosts: control
   tasks:
-    - name: ping
-      ping:
     - name: copy
       synchronize:
         src: ../control

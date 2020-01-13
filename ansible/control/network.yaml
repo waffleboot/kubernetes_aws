@@ -1,0 +1,24 @@
+- hosts: master
+  become: yes
+  tasks:
+    - file:
+        path: /etc/cni/net.d
+        state: directory
+    - name: loopback
+      shell:
+        warn: no
+        cmd: |
+          cat > /etc/cni/net.d/99-loopback.conf <<EOF  
+          {
+            "cniVersion": "0.2.0",
+            "name": "lo",
+            "type": "loopback"
+          }
+          EOF
+    - file:
+        path: /etc/cni/net.d
+        recurse: yes
+        owner: ubuntu
+        group: ubuntu
+    - command: /opt/bin/kubectl delete -n kube-system deploy/coredns
+    - command: /opt/bin/kubectl taint nodes --all node-role.kubernetes.io/master-

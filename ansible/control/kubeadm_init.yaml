@@ -1,0 +1,15 @@
+- hosts: master
+  become: yes
+  tasks:
+    - name: kubeadm init
+      command: /opt/bin/kubeadm init
+      environment:
+        PATH: /opt/bin:{{ansible_env.PATH}}
+    - shell:
+      cmd: |
+        mkdir /home/ubuntu/.kube
+        cp /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
+    - file:
+        path: /home/ubuntu/.kube/config
+        owner: ubuntu
+        group: ubuntu

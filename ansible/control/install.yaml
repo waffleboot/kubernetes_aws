@@ -1,6 +1,9 @@
 - hosts: master
   become: yes
   tasks:
+  - name: install docker
+    apt:
+      pkg: docker.io
   - name: install CNI plugins
     shell:
       cmd: |
@@ -40,4 +43,3 @@
       path: /opt/bin/kubectl
       owner: ubuntu
       group: ubuntu
-  
