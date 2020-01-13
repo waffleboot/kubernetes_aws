@@ -3,4 +3,4 @@ terraform/.terraform.tfstate.lock.info
 terraform/terraform.tfstate
 *.retry
 *.tfstate.backup
-terraform/ip_address.txt
+terraform/ip_master.txt

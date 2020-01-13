@@ -85,20 +85,20 @@ data "aws_security_groups" "default" {
   }
 }
 
-resource "aws_instance" "front" {
+resource "aws_instance" "master" {
   ami                    = "ami-1dab2163"
   instance_type          = "t3.micro"
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = concat([aws_security_group.public.id], data.aws_security_groups.default.ids)
   key_name               = "ssh-key"
   tags = {
-    Name = "front"
+    Name = "master"
   }
   provisioner "local-exec" {
-      command = "echo ${aws_instance.front.public_ip} > ip_address.txt"
+      command = "echo ${aws_instance.master.public_ip} > ip_master.txt"
   }
 }
 
 output "instance_ip_addr" {
-  value = aws_instance.front.public_dns
+  value = aws_instance.master.public_dns
 }
