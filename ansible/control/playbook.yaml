@@ -15,6 +15,7 @@
         curl -L "https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz" | tar -C /opt/bin -xz
   - name: install kubeadm, kubelet, kubectl
     shell:
+      executable: /bin/bash
       cmd: |
         RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)"
         mkdir -p /opt/bin
@@ -26,4 +27,17 @@
         mkdir -p /etc/systemd/system/kubelet.service.d
         curl -sSL "https://raw.githubusercontent.com/kubernetes/kubernetes/${RELEASE}/build/debs/10-kubeadm.conf" | sed "s:/usr/bin:/opt/bin:g" > /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
   - name: start kubelet
-    shell: systemctl enable --now kubelet
+    systemd:
+      name: kubelet
+      enabled: yes
+  - name: chown
+    file:
+      path: /opt/bin/kubeadm
+      owner: ubuntu
+      group: ubuntu
+  - name: chown
+    file:
+      path: /opt/bin/kubectl
+      owner: ubuntu
+      group: ubuntu
+  
