@@ -14,3 +14,4 @@ ansible-playbook -i control/inventory.yaml control/nginx.yaml
 /opt/bin/kubectl get deploy
 /opt/bin/kubectl get po
 http://instance_ip_addr
+terraform destroy
