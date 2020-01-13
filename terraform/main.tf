@@ -94,6 +94,9 @@ resource "aws_instance" "front" {
   tags = {
     Name = "front"
   }
+  provisioner "local-exec" {
+      command = "echo ${aws_instance.front.public_ip} > ip_address.txt"
+  }
 }
 
 output "instance_ip_addr" {
