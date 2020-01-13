@@ -109,7 +109,7 @@ resource "aws_instance" "worker" {
   subnet_id                   = aws_subnet.public.id
   associate_public_ip_address = false
   vpc_security_group_ids      = data.aws_security_groups.default.ids
-  key_name                    = "ssh-key"
+  key_name                    = "master-to-worker"
   tags = {
     Name = "worker"
   }

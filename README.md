@@ -4,7 +4,7 @@ terraform init
 terraform apply
 make make_ansible
 make install
-ssh -o "StrictHostKeyChecking no" -i ~/.aws/ssh-key.pem ubuntu@$(cat terraform/ip_master.txt)
+ssh -o "StrictHostKeyChecking no" -i ~/.aws/id_master_rsa ubuntu@$(cat terraform/ip_master.txt)
 ansible-playbook -i control/inventory.yaml control/install_docker.yaml
 ansible-playbook -i control/inventory.yaml control/install_k8s.yaml
 ansible-playbook -i control/inventory.yaml control/kubeadm_init.yaml

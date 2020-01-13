@@ -9,4 +9,18 @@
     - copy:
         src: /terraform/ip_worker.txt
         dest: ~/ip_worker.txt
-    
+    - copy:
+        src: /.aws/id_aws_worker_rsa
+        dest: ~/.ssh/id_rsa
+    - file:
+        path: ~/.ssh/id_rsa
+        mode: '400'
+    - shell:
+        cmd: |
+          cat > ~/.ssh/config <<EOF
+          Host worker
+            User ubuntu
+            HostName {{ ip_worker }}
+            IdentityFile ~/.ssh/id_rsa
+            StrictHostKeyChecking no
+          EOF

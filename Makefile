@@ -1,4 +1,5 @@
 ip_master = $(shell cat terraform/ip_master.txt)
+ip_worker = $(shell cat terraform/ip_worker.txt)
 
 make_terraform:
 	docker build -t yangand/kubernetes_terraform terraform/docker
@@ -19,8 +20,15 @@ ansible:
 	docker run --rm --name ansible -it -v ${PWD}/ansible:/ansible -v /Users/yangand/.aws:/.aws yangand/kubernetes_ansible
 
 install:
-	docker run --rm --name ansible -it -v ${PWD}/ansible:/ansible -v ${PWD}/terraform:/terraform -v /Users/yangand/.aws:/.aws yangand/kubernetes_ansible \
-	ansible-playbook --extra-vars ip_master=$(ip_master) -i /ansible/install/inventory.yaml /ansible/install/install_python.yaml /ansible/install/copy_to_remote.yaml
+	docker run --rm --name ansible -it \
+	-v ${PWD}/ansible:/ansible \
+	-v ${PWD}/terraform:/terraform \
+	-v /Users/yangand/.aws:/.aws \
+	yangand/kubernetes_ansible ansible-playbook \
+	--extra-vars ip_master=$(ip_master) --extra-vars ip_worker=$(ip_worker) \
+	-i /ansible/install/inventory.yaml \
+	/ansible/install/install_python.yaml \
+	/ansible/install/copy_to_remote.yaml
 
 clean:
 	docker image prune -a
