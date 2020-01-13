@@ -1,10 +1,7 @@
 - hosts: master
   become: yes
   tasks:
-    - name: kubeadm init
-      command: /opt/bin/kubeadm init
-      environment:
-        PATH: /opt/bin:{{ansible_env.PATH}}
+    - command: kubeadm init
     - shell:
         cmd: |
           mkdir /home/ubuntu/.kube
