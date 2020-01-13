@@ -18,7 +18,7 @@ resource "aws_vpc" "test" {
 resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.test.id
   cidr_block              = "192.168.0.0/26"
-  availability_zone       = "eu-north-1a"
+  availability_zone       = "eu-north-1b"
   map_public_ip_on_launch = true
   tags = {
     Name = "public"

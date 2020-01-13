@@ -1,0 +1,8 @@
+all:
+  hosts:
+    control:
+      ansible_connection: ssh
+      ansible_ssh_private_key_file: /root/.aws/ssh-key.pem
+      ansible_host: ec2-13-48-46-48.eu-north-1.compute.amazonaws.com
+      ansible_user: ubuntu
+      ansible_port: 22
