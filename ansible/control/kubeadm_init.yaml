@@ -1,7 +1,9 @@
-- hosts: master
+- hosts: all
   become: yes
   tasks:
     - command: kubeadm init --node-name master
+      register: output
+    - debug: msg="{{ output.stdout }}"
     - shell:
         cmd: |
           mkdir /home/ubuntu/.kube

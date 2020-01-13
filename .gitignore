@@ -5,4 +5,4 @@ terraform/terraform.tfstate
 *.tfstate.backup
 terraform/ip_master.txt
 terraform/ip_worker.txt
-
+terraform/ip_worker.private.txt

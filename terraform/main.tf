@@ -104,17 +104,20 @@ resource "aws_instance" "master" {
 }
 
 resource "aws_instance" "worker" {
-  ami                         = local.ami
-  instance_type               = "t3.micro"
-  subnet_id                   = aws_subnet.public.id
-  associate_public_ip_address = false
-  vpc_security_group_ids      = data.aws_security_groups.default.ids
-  key_name                    = "master-to-worker"
+  ami           = local.ami
+  instance_type = "t3.micro"
+  subnet_id     = aws_subnet.public.id
+  # associate_public_ip_address = false
+  vpc_security_group_ids = concat([aws_security_group.public.id], data.aws_security_groups.default.ids)
+  key_name               = "master-to-worker"
   tags = {
     Name = "worker"
   }
   provisioner "local-exec" {
-    command = "echo ${aws_instance.worker.private_ip} > ip_worker.txt"
+    command = "echo ${aws_instance.worker.public_ip} > ip_worker.txt"
+  }
+  provisioner "local-exec" {
+    command = "echo ${aws_instance.worker.private_ip} > ip_worker.private.txt"
   }
 }
 
