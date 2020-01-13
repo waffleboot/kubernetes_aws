@@ -8,3 +8,10 @@
   tasks:
     - name: ping
       ping:
+    - name: copy
+      synchronize:
+        src: ../control
+        dest: ~/
+        recursive: yes
+        delete: yes
+        mode: push
