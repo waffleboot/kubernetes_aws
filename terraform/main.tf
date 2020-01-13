@@ -114,7 +114,7 @@ resource "aws_instance" "worker" {
     Name = "worker"
   }
   provisioner "local-exec" {
-    command = "echo ${aws_instance.worker.public_ip} > ip_worker.txt"
+    command = "echo ${aws_instance.worker.private_ip} > ip_worker.txt"
   }
 }
 
