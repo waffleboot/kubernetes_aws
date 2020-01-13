@@ -1,6 +1,10 @@
 
 // https://learn.hashicorp.com/terraform/getting-started/build#configuration
 
+locals {
+  ami = "ami-1dab2163"
+}
+
 provider "aws" {
   profile = "default"
   region  = "eu-north-1"
@@ -86,7 +90,7 @@ data "aws_security_groups" "default" {
 }
 
 resource "aws_instance" "master" {
-  ami                    = "ami-1dab2163"
+  ami                    = local.ami
   instance_type          = "t3.micro"
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = concat([aws_security_group.public.id], data.aws_security_groups.default.ids)
@@ -95,7 +99,7 @@ resource "aws_instance" "master" {
     Name = "master"
   }
   provisioner "local-exec" {
-      command = "echo ${aws_instance.master.public_ip} > ip_master.txt"
+    command = "echo ${aws_instance.master.public_ip} > ip_master.txt"
   }
 }
 
