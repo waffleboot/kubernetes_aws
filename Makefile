@@ -17,7 +17,7 @@ ansible:
 	docker run --rm --name ansible -it -w /opt -v ${PWD}/ansible:/opt -v /Users/yangand/.aws:/root/.aws yangand/kubernetes_ansible
 
 install:
-	docker run --rm --name ansible -it -w /opt -v ${PWD}/ansible:/opt -v /Users/yangand/.aws:/root/.aws yangand/kubernetes_ansible ansible-playbook -i ./install/inventory.yaml ./install/playbook.yaml
+	docker run --rm --name ansible -it -w /opt -v ${PWD}/ansible:/opt -v /Users/yangand/.aws:/root/.aws yangand/kubernetes_ansible ansible-playbook -i ./install/inventory.yaml ./install/install.yaml ./install/sync.yaml
 
 clean:
 	docker image prune -a

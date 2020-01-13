@@ -1,0 +1,9 @@
+- hosts: control
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: install python
+      raw: apt-get update && apt-get install -y python
+    - name: install ansible
+      apt:
+        pkg: ansible
