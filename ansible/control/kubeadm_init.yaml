@@ -3,7 +3,7 @@
   tasks:
     - command: kubeadm init --node-name master
       register: output
-    - debug: msg="{{ output.stdout }}"
+    - debug: msg="{{ output.stdout_lines }}"
     - shell:
         cmd: |
           mkdir /home/ubuntu/.kube

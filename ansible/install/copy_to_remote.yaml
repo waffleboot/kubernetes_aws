@@ -12,7 +12,7 @@
         src: /terraform/ip_worker.private.txt
         dest: ~/ip_worker.txt  
     - copy:
-        src: /.aws/id_worker_rsa
+        src: /.aws/id_rsa_worker
         dest: ~/.ssh/id_rsa
     - file:
         path: ~/.ssh/id_rsa

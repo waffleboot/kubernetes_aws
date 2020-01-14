@@ -38,3 +38,7 @@ worker:
 
 clean:
 	docker image prune -a
+
+ssh_config:
+	~/go/bin/ssh_config ~/.ssh master $(ip_master) ubuntu ~/.aws/id_rsa_master
+	~/go/bin/ssh_config ~/.ssh worker $(ip_worker) ubuntu ~/.aws/id_rsa_worker
