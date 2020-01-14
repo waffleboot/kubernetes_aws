@@ -31,10 +31,10 @@ install:
 	/ansible/install/copy_to_remote.yaml
 
 master:
-	ssh -o "StrictHostKeyChecking no" -i ~/.aws/id_master_rsa ubuntu@$(ip_master)
+	ssh -o "StrictHostKeyChecking no" -i ~/.aws/id_rsa_master ubuntu@$(ip_master)
 
 worker:
-	ssh -o "StrictHostKeyChecking no" -i ~/.aws/id_worker_rsa ubuntu@$(ip_worker)
+	ssh -o "StrictHostKeyChecking no" -i ~/.aws/id_rsa_worker ubuntu@$(ip_worker)
 
 clean:
 	docker image prune -a
