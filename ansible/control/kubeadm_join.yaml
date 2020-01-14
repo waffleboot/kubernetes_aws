@@ -1,4 +1,8 @@
 - hosts: worker
+  vars:
+    ip: 192.168.0.16:6443
+    token: 5docj0.6b114f9n4r7gbw6c
+    hash: sha256:0bda71521ea4e0445b17cee2bfd63d37ecc45ea364d67c10212de58e7a1c83db
   become: yes
   tasks:
     - command: kubeadm join {{ ip }} --token {{ token }} --discovery-token-ca-cert-hash {{ hash }} --node-name worker
