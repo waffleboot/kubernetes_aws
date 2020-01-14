@@ -3,14 +3,14 @@ all:
     master:
       ansible_connection: ssh
       ansible_ssh_common_args: -o "StrictHostKeyChecking no"
-      ansible_ssh_private_key_file: /.aws/id_master_rsa
+      ansible_ssh_private_key_file: /.aws/id_rsa_master
       ansible_host: "{{ ip_master }}"
       ansible_user: ubuntu
       # ansible_port: 22
     worker:
       ansible_connection: ssh
       ansible_ssh_common_args: -o "StrictHostKeyChecking no"
-      ansible_ssh_private_key_file: /.aws/id_worker_rsa
+      ansible_ssh_private_key_file: /.aws/id_rsa_worker
       ansible_host: "{{ ip_worker }}"
       ansible_user: ubuntu
       # ansible_port: 22
