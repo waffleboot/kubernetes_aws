@@ -3,6 +3,7 @@ terraform/.terraform.tfstate.lock.info
 terraform/terraform.tfstate
 *.retry
 *.tfstate.backup
-terraform/ip_master.txt
-terraform/ip_worker.txt
-terraform/ip_worker.private.txt
+terraform/public_master_ip
+terraform/public_worker_ip
+terraform/private_master_ip
+terraform/private_worker_ip

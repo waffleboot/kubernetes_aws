@@ -1,4 +1,0 @@
-- hosts: all
-  tasks:
-    - command: kubectl taint nodes --all node-role.kubernetes.io/master-
-    - command: kubectl delete -n kube-system deploy/coredns

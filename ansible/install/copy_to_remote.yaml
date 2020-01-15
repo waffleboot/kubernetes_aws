@@ -1,4 +1,5 @@
 - hosts: all
+  gather_facts: no
   tasks:
     - synchronize:
         src: /ansible/control
@@ -7,10 +8,8 @@
         delete: yes
         mode: push
 - hosts: master
+  gather_facts: no
   tasks:
-    - copy:
-        src: /terraform/ip_worker.private.txt
-        dest: ~/ip_worker.txt  
     - copy:
         src: /.aws/id_rsa_worker
         dest: ~/.ssh/id_rsa
@@ -22,7 +21,7 @@
           cat > ~/.ssh/config <<EOF
           Host worker
             User ubuntu
-            HostName {{ ip_worker }}
+            HostName {{ private_worker_ip }}
             IdentityFile ~/.ssh/id_rsa
             StrictHostKeyChecking no
           EOF

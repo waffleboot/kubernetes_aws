@@ -1,8 +1,16 @@
+- hosts: master
+  gather_facts: no
+  tasks:
+    - shell: kubectl get secrets -n kube-system --field-selector type=bootstrap.kubernetes.io/token --template='{{'{{'}}(index (index .items 0).data "token-id")}}' | base64 --decode
+      register: token_id
+    - shell: kubectl get secrets -n kube-system --field-selector type=bootstrap.kubernetes.io/token --template='{{'{{'}}(index (index .items 0).data "token-secret")}}' | base64 --decode
+      register: token_secret
+    - set_fact:
+        token_id: "{{token_id.stdout_lines[0]}}"
+        token_secret: "{{token_secret.stdout_lines[0]}}"
 - hosts: worker
-  vars:
-    ip: 192.168.0.16:6443
-    token: 5docj0.6b114f9n4r7gbw6c
-    hash: sha256:0bda71521ea4e0445b17cee2bfd63d37ecc45ea364d67c10212de58e7a1c83db
+  gather_facts: no
   become: yes
   tasks:
-    - command: kubeadm join {{ ip }} --token {{ token }} --discovery-token-ca-cert-hash {{ hash }} --node-name worker
+    - command: kubeadm join {{ private_master_ip }}:6443 --token {{ hostvars['master']['token_id'] }}.{{ hostvars['master']['token_secret'] }} --node-name worker --discovery-token-unsafe-skip-ca-verification
+      register: output

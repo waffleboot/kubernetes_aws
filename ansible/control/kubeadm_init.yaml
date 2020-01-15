@@ -1,9 +1,11 @@
 - hosts: master
   become: yes
+  gather_facts: no
   tasks:
-    - command: kubeadm init --node-name master
+    - name: kubeadm init
+      command: kubeadm init --node-name master
       register: output
-    - debug: msg="{{ output.stdout_lines }}"
+    - debug: var=output
     - shell:
         cmd: |
           mkdir /home/ubuntu/.kube
@@ -12,3 +14,8 @@
         path: /home/ubuntu/.kube/config
         owner: ubuntu
         group: ubuntu
+- hosts: master
+  gather_facts: no
+  tasks:
+    - command: kubectl taint nodes --all node-role.kubernetes.io/master-
+    - command: kubectl delete -n kube-system deploy/coredns      

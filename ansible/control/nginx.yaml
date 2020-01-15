@@ -1,3 +1,5 @@
-- hosts: all
+- hosts: master
+  gather_facts: no
   tasks:
-    - command: kubectl apply -f k8s/nginx.yaml
+    - name: run nginx
+      command: kubectl apply -f control/k8s/nginx.yaml

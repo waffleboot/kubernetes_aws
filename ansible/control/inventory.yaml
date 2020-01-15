@@ -1,2 +1,0 @@
-master ansible_connection=local
-worker ansible_connection=local

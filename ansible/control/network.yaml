@@ -1,12 +1,13 @@
 - hosts: all
   become: yes
+  gather_facts: no
   tasks:
     - file:
         path: /etc/cni/net.d
         state: directory
         owner: ubuntu
         group: ubuntu
-    - name: loopback
+    - name: setup cluster network
       become: no
       shell:
         warn: no
