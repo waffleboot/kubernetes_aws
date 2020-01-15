@@ -1,5 +1,5 @@
 - hosts: all
-  gather_facts: no
+  gather_facts: yes
   tasks:
     - synchronize:
         src: /ansible/control
@@ -16,12 +16,13 @@
     - file:
         path: ~/.ssh/id_rsa
         mode: '400'
-    - shell:
+    - name: .ssh/config
+      shell:
         cmd: |
           cat > ~/.ssh/config <<EOF
           Host worker
             User ubuntu
-            HostName {{ private_worker_ip }}
+            HostName {{ hostvars['worker']['ansible_default_ipv4']['address'] }}
             IdentityFile ~/.ssh/id_rsa
             StrictHostKeyChecking no
           EOF

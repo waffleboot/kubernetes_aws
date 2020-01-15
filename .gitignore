@@ -5,5 +5,3 @@ terraform/terraform.tfstate
 *.tfstate.backup
 terraform/public_master_ip
 terraform/public_worker_ip
-terraform/private_master_ip
-terraform/private_worker_ip

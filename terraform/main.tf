@@ -111,10 +111,7 @@ resource "aws_instance" "master" {
     Name = "master"
   }
   provisioner "local-exec" {
-    command = "echo ${aws_instance.master.public_ip} > master_public_ip"
-  }
-  provisioner "local-exec" {
-    command = "echo ${aws_instance.master.private_ip} > master_private_ip"
+    command = "echo ${aws_instance.master.public_ip} > public_master_ip"
   }
 }
 
@@ -129,10 +126,7 @@ resource "aws_instance" "worker" {
     Name = "worker"
   }
   provisioner "local-exec" {
-    command = "echo ${aws_instance.worker.public_ip} > worker_public_ip"
-  }
-  provisioner "local-exec" {
-    command = "echo ${aws_instance.worker.private_ip} > worker_private_ip"
+    command = "echo ${aws_instance.worker.public_ip} > public_worker_ip"
   }
 }
 
