@@ -5,7 +5,7 @@
     - name: kubeadm init
       command: kubeadm init --node-name master
       register: output
-    - debug: var=output
+    - debug: var=output.stdout_lines
     - shell:
         cmd: |
           mkdir /home/ubuntu/.kube

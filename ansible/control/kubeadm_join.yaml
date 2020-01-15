@@ -1,5 +1,9 @@
 - hosts: master
   tasks:
+    - name: discovery-file
+      shell:
+        cmd: kubectl -n kube-public get cm cluster-info --template '{{'{{'}}.data.kubeconfig}}'
+      register: discovery_file
     - shell: kubectl get secrets -n kube-system --field-selector type=bootstrap.kubernetes.io/token --template='{{'{{'}}(index (index .items 0).data "token-id")}}' | base64 --decode
       register: token_id
     - shell: kubectl get secrets -n kube-system --field-selector type=bootstrap.kubernetes.io/token --template='{{'{{'}}(index (index .items 0).data "token-secret")}}' | base64 --decode
@@ -7,8 +11,15 @@
     - set_fact:
         token_id: "{{token_id.stdout_lines[0]}}"
         token_secret: "{{token_secret.stdout_lines[0]}}"
+        discovery_file: "{{discovery_file.stdout}}"
 - hosts: worker
   gather_facts: no
   become: yes
   tasks:
-    - command: kubeadm join {{ hostvars['master']['ansible_default_ipv4']['address'] }}:6443 --token {{ hostvars['master']['token_id'] }}.{{ hostvars['master']['token_secret'] }} --node-name worker --discovery-token-unsafe-skip-ca-verification
+    - shell: 
+        cmd: echo "{{hostvars['master'].discovery_file}}" > discovery-file
+    - command: kubeadm join --token {{ hostvars['master']['token_id'] }}.{{ hostvars['master']['token_secret'] }} --node-name worker --discovery-file discovery-file
+      register: output
+    - debug: var=output.stdout_lines
+
+    # --discovery-token-unsafe-skip-ca-verification
