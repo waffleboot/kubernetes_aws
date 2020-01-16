@@ -11,9 +11,10 @@
           mkdir /home/ubuntu/.kube
           cp /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
     - file:
-        path: /home/ubuntu/.kube/config
+        path: /home/ubuntu/.kube
         owner: ubuntu
         group: ubuntu
+        recurse: yes
 - hosts: master
   gather_facts: no
   tasks:

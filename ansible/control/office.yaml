@@ -1,0 +1,95 @@
+- hosts: worker
+  gather_facts: no
+  tasks:
+    - command: openssl genrsa -out employee.key 2048
+    - command: openssl req -new -key employee.key -out employee.csr -subj "/CN=employee/O=bitnami"
+    - fetch:
+        src: employee.csr
+        dest: ~/
+        flat: yes
+    - file:
+        path: employee.csr
+        state: absent
+- hosts: master
+  tasks:
+    - copy:
+        src: ~/employee.csr
+        dest: ~/
+    - command: openssl x509 -req -in employee.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out employee.crt -days 500
+      become: yes
+    - file:
+        path: employee.csr
+        state: absent
+    - fetch:
+        flat: yes
+        src: employee.crt
+        dest: ~/
+    - fetch:
+        become: yes
+        flat: yes
+        src: /etc/kubernetes/pki/ca.crt
+        dest: ~/
+    - file:
+        path: employee.csr
+        state: absent
+    - file:
+        path: employee.crt
+        state: absent
+- hosts: worker
+  gather_facts: no
+  tasks:
+    - copy:
+        src: ~/ca.crt
+        dest: ~/
+    - copy:
+        src: ~/employee.crt
+        dest: ~/
+    - command: kubectl config set-credentials employee --client-certificate=employee.crt  --client-key=employee.key --embed-certs=true
+    - command: kubectl config set-context employee-context --cluster=kubernetes --namespace=office --user=employee
+    - command: kubectl config set-cluster kubernetes --server=https://{{ hostvars['master']['ansible_default_ipv4']['address'] }}:6443
+    - command: kubectl config set-cluster kubernetes --certificate-authority=ca.crt --embed-certs=true
+    - command: kubectl config use-context employee-context
+    - file:
+        path: ca.crt
+        state: absent
+    - file:
+        path: employee.key
+        state: absent
+    - file:
+        path: employee.crt
+        state: absent
+- hosts: master
+  gather_facts: no
+  tasks:
+    - command: kubectl create namespace office
+      ignore_errors: yes
+    - shell:
+        cmd: |
+          kubectl apply -f - <<EOF
+          kind: Role
+          apiVersion: rbac.authorization.k8s.io/v1beta1
+          metadata:
+            namespace: office
+            name: deployment-manager
+          rules:
+            - apiGroups: ["", "extensions", "apps"]
+              resources: ["deployments", "replicasets", "pods"]
+              verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+          EOF
+    - shell:
+        cmd: |
+          kubectl apply -f - <<EOF
+          kind: RoleBinding
+          apiVersion: rbac.authorization.k8s.io/v1beta1
+          metadata:
+            name: deployment-manager-binding
+            namespace: office
+          subjects:
+          - kind: User
+            name: employee
+            apiGroup: ""
+          roleRef:
+            kind: Role
+            name: deployment-manager
+            apiGroup: "" 
+          EOF

@@ -44,6 +44,7 @@ install:
 	/ansible/control/kubeadm_init.yaml \
 	/ansible/control/kubeadm_join.yaml \
 	/ansible/control/network.yaml \
+	/ansible/control/office.yaml \
 	/ansible/control/nginx.yaml
 
 reset:
