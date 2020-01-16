@@ -1,6 +1,8 @@
 public_master_ip  = $(shell cat terraform/public_master_ip)
 public_worker_ip  = $(shell cat terraform/public_worker_ip)
 
+build: apply install ssh_config
+
 make_terraform:
 	docker build -t yangand/kubernetes_terraform terraform/docker
 
@@ -12,6 +14,12 @@ make_ansible:
 
 test_ansible:
 	docker run --rm -it yangand/kubernetes_ansible
+
+apply:
+	docker run --rm --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform apply -auto-approve
+
+destroy:
+	docker run --rm --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform destroy -auto-approve
 
 terraform:
 	docker run --rm --name terraform -it -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform
