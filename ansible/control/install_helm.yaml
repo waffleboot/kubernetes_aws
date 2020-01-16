@@ -10,7 +10,10 @@
           curl -sO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256"
           sha256sum helm-${HELM_VERSION}-linux-amd64.tar.gz && cat helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256
           tar -zxvf helm-${HELM_VERSION}-linux-amd64.tar.gz
-    - command: ln /opt/helm/linux-amd64/helm /usr/local/bin/helm
+    - file:
+        src: /opt/helm/linux-amd64/helm
+        dest: /usr/local/bin/helm
+        state: hard
     - command: helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 # - hosts: master
 #   gather_facts: no
