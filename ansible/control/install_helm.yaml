@@ -14,8 +14,8 @@
         src: /opt/helm/linux-amd64/helm
         dest: /usr/local/bin/helm
         state: hard
+- hosts: master
+  gather_facts: no
+  tasks:
     - command: helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-# - hosts: master
-#   gather_facts: no
-#   tasks:
 #     - command: helm install stable/redis --generate-name
