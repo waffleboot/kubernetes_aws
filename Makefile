@@ -40,6 +40,7 @@ install:
 	/ansible/install/copy_to_remote.yaml \
 	/ansible/control/install_docker.yaml \
 	/ansible/control/install_k8s.yaml \
+	/ansible/control/install_helm.yaml \
 	/ansible/control/kubeadm_init.yaml \
 	/ansible/control/kubeadm_join.yaml \
 	/ansible/control/network.yaml \

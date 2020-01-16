@@ -1,6 +1,6 @@
 - hosts: master
-  become: yes
   gather_facts: no
+  become: yes
   tasks:
     - name: kubeadm init
       command: kubeadm init --node-name master
