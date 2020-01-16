@@ -129,7 +129,3 @@ resource "aws_instance" "worker" {
     command = "echo ${aws_instance.worker.public_ip} > public_worker_ip"
   }
 }
-
-output "instance_ip_addr" {
-  value = aws_instance.master.public_dns
-}
