@@ -21,7 +21,9 @@ spec:
                   values:
                     - nginx
               topologyKey: "kubernetes.io/hostname"
-      hostNetwork: true
       containers:
         - name: nginx
           image: nginx
+          ports:
+            - containerPort: 80
+              hostPort: 7080
