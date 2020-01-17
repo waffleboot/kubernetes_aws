@@ -44,8 +44,7 @@ install:
 	/ansible/control/install_helm.yaml \
 	/ansible/control/kubeadm_init.yaml \
 	/ansible/control/kubeadm_join.yaml \
-	/ansible/control/network.yaml \
-	/ansible/control/git.yaml
+	/ansible/control/network.yaml
 
 reset:
 	docker run --rm --name ansible -it \

@@ -7,31 +7,32 @@
           apiVersion: apps/v1
           kind: Deployment
           metadata:
-              name: sourcegraph
-              namespace: default
+            name: sourcegraph
+            namespace: default
           spec:
-              selector:
+            selector:
               matchLabels:
-                  app: sourcegraph
-              template:
+                app: sourcegraph
+            template:
               metadata:
-                  labels:
+                labels:
                   app: sourcegraph
               spec:
-                  hostNetwork: true
-                  containers:
-                  - image: sourcegraph/server:3.11.4
+                hostNetwork: true
+                containers:
+                - image: sourcegraph/server:3.11.4
                   name: sourcegraph
                   volumeMounts:
-                      - name: config
+                    - name: config
                       mountPath: /etc/sourcegraph
-                      - name: data
+                    - name: data
                       mountPath: /var/opt/sourcegraph
-                  volumes:
+                volumes:
                   - name: config
-                      hostPath:
+                    hostPath:
                       path: /home/ubuntu/.sourcegraph/config
                   - name: data
-                      hostPath:
+                    hostPath:
                       path: /home/ubuntu/.sourcegraph/data
           EOF
+
