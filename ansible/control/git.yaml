@@ -1,0 +1,7 @@
+- hosts: master
+  gather_facts: no
+  tasks:
+    - git:
+        repo: https://github.com/kubernetes/kubernetes
+        depth: 1
+        dest: ~/kubernetes

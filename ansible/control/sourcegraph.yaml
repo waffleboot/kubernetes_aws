@@ -1,0 +1,37 @@
+- hosts: master
+  gather_facts: no
+  tasks:
+    - shell:
+        cmd: |
+          kubectl create -f - << EOF
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+              name: sourcegraph
+              namespace: default
+          spec:
+              selector:
+              matchLabels:
+                  app: sourcegraph
+              template:
+              metadata:
+                  labels:
+                  app: sourcegraph
+              spec:
+                  hostNetwork: true
+                  containers:
+                  - image: sourcegraph/server:3.11.4
+                  name: sourcegraph
+                  volumeMounts:
+                      - name: config
+                      mountPath: /etc/sourcegraph
+                      - name: data
+                      mountPath: /var/opt/sourcegraph
+                  volumes:
+                  - name: config
+                      hostPath:
+                      path: /home/ubuntu/.sourcegraph/config
+                  - name: data
+                      hostPath:
+                      path: /home/ubuntu/.sourcegraph/data
+          EOF
