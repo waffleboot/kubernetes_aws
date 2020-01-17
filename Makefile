@@ -38,7 +38,6 @@ install:
 	--extra-vars public_worker_ip=$(public_worker_ip) \
 	-i /ansible/install/inventory.yaml \
 	/ansible/install/install_python.yaml \
-	/ansible/install/copy_to_remote.yaml \
 	/ansible/control/install_docker.yaml \
 	/ansible/control/install_k8s.yaml \
 	/ansible/control/install_helm.yaml \
