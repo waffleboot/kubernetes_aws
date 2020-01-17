@@ -1,3 +1,8 @@
+- hosts: worker
+  gather_facts: no
+  become: yes
+  tasks:
+    - command: iptables -t filter -P FORWARD ACCEPT
 - hosts: all
   become: yes
   gather_facts: no
