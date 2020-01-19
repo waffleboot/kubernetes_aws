@@ -5,9 +5,5 @@
         repo: https://github.com/kubernetes/kubernetes
         depth: 1
         dest: ~/kubernetes
-    - shell: find kubernetes -name 'test' -exec rm -rf {} \;
-    - shell: find kubernetes -name 'testing' -exec rm -rf {} \;
-    - shell: find kubernetes -name 'testdata' -exec rm -rf {} \;
-    - shell: find kubernetes -name '*_test.go' -exec rm -rf {} \;
-    - shell: find kubernetes -name '*_others.go' -exec rm -rf {} \;
-    - shell: find kubernetes -name '*_windows.go' -exec rm -rf {} \;
+    - shell: find kubernetes -name '*_test.go' -type f -delete
+    - shell: find kubernetes -not -name '*.go' -and -type f -delete
