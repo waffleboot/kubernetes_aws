@@ -1,0 +1,28 @@
+- hosts: master
+  gather_facts: no
+  become: yes
+  tasks:
+    - command: openssl genrsa -out yangand.key 2048
+    - command: openssl req -new -key yangand.key -out yangand.csr -subj "/CN=yangand/O=system:masters"
+    - command: openssl x509 -req -in yangand.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out yangand.crt -days 500
+    - fetch:
+        src: yangand.crt
+        dest: /ansible/
+        flat: yes
+    - fetch:
+        src: yangand.key
+        dest: /ansible/
+        flat: yes
+    - fetch:
+        src: /etc/kubernetes/pki/ca.crt
+        dest: /ansible/
+        flat: yes
+    - file:
+        path: yangand.csr
+        state: absent
+    - file:
+        path: yangand.crt
+        state: absent
+    - file:
+        path: yangand.key
+        state: absent

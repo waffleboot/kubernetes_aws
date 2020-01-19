@@ -42,8 +42,17 @@ install:
 	/ansible/control/install_helm.yaml \
 	/ansible/control/kubeadm_init.yaml \
 	/ansible/control/kubeadm_join.yaml \
+	/ansible/control/user_admin.yaml
 	/ansible/control/network.yaml \
 	/ansible/control/git.yaml
+	kubectl config set-cluster kubernetes --server=https://$(public_master_ip):6443
+	kubectl config set-cluster kubernetes --certificate-authority=ansible/ca.crt --embed-certs=true
+	kubectl config set-credentials yangand --client-certificate=ansible/yangand.crt  --client-key=ansible/yangand.key --embed-certs=true
+	kubectl config set-context kubernetes-yangand --cluster=kubernetes --user=yangand
+	kubectl config use-context kubernetes-yangand
+	rm ansible/yangand.crt
+	rm ansible/yangand.key
+	rm ansible/ca.crt
 
 reset:
 	docker run --rm --name ansible -it \
