@@ -14,6 +14,7 @@
         src: /opt/helm/linux-amd64/helm
         dest: /usr/local/bin/helm
         state: hard
+        force: yes
 - hosts: master
   gather_facts: no
   tasks:
