@@ -30,3 +30,8 @@
       name: kubelet
       state: started
       enabled: yes
+  - name: ip_forward
+    shell: echo 1 > /proc/sys/net/ipv4/ip_forward
+  - shell: modprobe br_netfilter
+  - name:
+    shell: echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables
