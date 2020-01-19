@@ -28,4 +28,5 @@
   - name: start kubelet
     systemd:
       name: kubelet
+      state: started
       enabled: yes
