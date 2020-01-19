@@ -1,0 +1,24 @@
+- hosts: all
+  gather_facts: no
+  become: yes
+  tasks:
+    - command: kubeadm reset -f
+- hosts: master
+  gather_facts: no
+  become: yes
+  tasks:
+    - file:
+        path: /usr/local/bin/helm
+        state: absent
+    - systemd:
+        name: kubelet
+        state: stopped
+        enabled: no
+    - systemd:
+        name: docker
+        state: stopped
+        enabled: no
+    - name: uninstall docker
+      apt:
+        pkg: docker.io
+        state: absent

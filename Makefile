@@ -54,7 +54,7 @@ reset:
 	--extra-vars public_master_ip=$(public_master_ip) \
 	--extra-vars public_worker_ip=$(public_worker_ip) \
 	-i /ansible/install/inventory.yaml \
-	/ansible/reset/playbook.yaml
+	/ansible/reset/reset.yaml
 
 clean:
 	docker image prune -a
