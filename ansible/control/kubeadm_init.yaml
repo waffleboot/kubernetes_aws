@@ -3,7 +3,7 @@
   become: yes
   tasks:
     - name: kubeadm init
-      command: kubeadm init --node-name master
+      command: kubeadm init --node-name master --ignore-preflight-errors=FileContent--proc-sys-net-ipv4-ip_forward,FileContent--proc-sys-net-bridge-bridge-nf-call-iptables
       register: output
     - debug: var=output.stdout_lines
     - shell:

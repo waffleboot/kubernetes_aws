@@ -18,7 +18,7 @@
   tasks:
     - shell: 
         cmd: echo "{{hostvars['master'].discovery_file}}" > discovery-file
-    - command: kubeadm join --token {{ hostvars['master']['token_id'] }}.{{ hostvars['master']['token_secret'] }} --node-name worker --discovery-file discovery-file
+    - command: kubeadm join --token {{ hostvars['master']['token_id'] }}.{{ hostvars['master']['token_secret'] }} --node-name worker --discovery-file discovery-file --ignore-preflight-errors=FileContent--proc-sys-net-ipv4-ip_forward,FileContent--proc-sys-net-bridge-bridge-nf-call-iptables
       register: output
     - debug: var=output.stdout_lines
 
