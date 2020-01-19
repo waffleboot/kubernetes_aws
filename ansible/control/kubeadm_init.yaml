@@ -3,7 +3,7 @@
   become: yes
   tasks:
     - name: kubeadm init
-      command: kubeadm init --node-name master
+      command: kubeadm init --node-name master --apiserver-cert-extra-sans '{{ public_master_ip }}'
       register: output
     - debug: var=output.stdout_lines
     - shell:
