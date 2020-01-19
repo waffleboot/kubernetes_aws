@@ -14,11 +14,3 @@
         name: kubelet
         state: stopped
         enabled: no
-    - systemd:
-        name: docker
-        state: stopped
-        enabled: no
-    - name: uninstall docker
-      apt:
-        pkg: docker.io
-        state: absent
