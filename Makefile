@@ -37,7 +37,7 @@ install:
 	--extra-vars public_worker_ip=$(public_worker_ip) \
 	-i /ansible/install/inventory.yaml \
 	/ansible/install/install_python.yaml \
-	/ansible/control/install_docker.yaml \
+	/ansible/control/install_containerd.yaml \
 	/ansible/control/install_k8s.yaml \
 	/ansible/control/install_helm.yaml \
 	/ansible/control/kubeadm_init.yaml \

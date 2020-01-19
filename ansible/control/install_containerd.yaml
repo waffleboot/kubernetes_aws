@@ -2,6 +2,6 @@
   become: yes
   gather_facts: no
   tasks:
-  - name: install docker
+  - name: install containerd
     apt:
-      pkg: docker.io
+      pkg: containerd
