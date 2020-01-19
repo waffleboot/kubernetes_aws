@@ -42,7 +42,7 @@ install:
 	/ansible/control/install_helm.yaml \
 	/ansible/control/kubeadm_init.yaml \
 	/ansible/control/kubeadm_join.yaml \
-	/ansible/control/user_admin.yaml
+	/ansible/control/user_admin.yaml \
 	/ansible/control/network.yaml \
 	/ansible/control/git.yaml
 	kubectl config set-cluster kubernetes --server=https://$(public_master_ip):6443
