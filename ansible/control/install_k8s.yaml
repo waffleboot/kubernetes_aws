@@ -8,6 +8,11 @@
         CNI_VERSION="v0.8.2"
         mkdir -p /opt/cni/bin
         curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz" | tar -C /opt/cni/bin -xz
+  - name: install crictl
+    shell:
+      cmd: |
+        CRICTL_VERSION="v1.16.0"
+        curl -L "https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz" | tar -C /usr/local/bin -xz
   - name: install kubeadm, kubelet, kubectl
     shell:
       executable: /bin/bash
