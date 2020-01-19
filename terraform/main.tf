@@ -70,6 +70,12 @@ resource "aws_security_group" "public" {
   ingress {
     cidr_blocks = ["0.0.0.0/0"]
     protocol    = "tcp"
+    from_port   = 6443
+    to_port     = 6443
+  }
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    protocol    = "tcp"
     from_port   = 7080
     to_port     = 7080
   }
