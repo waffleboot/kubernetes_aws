@@ -3,7 +3,7 @@
   become: yes
   tasks:
     - name: install python
-      raw: apt-get update && apt-get install -y python
+      raw: apt update && apt install -y python
     - name: install ansible
       apt:
         pkg:
