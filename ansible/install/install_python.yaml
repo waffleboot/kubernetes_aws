@@ -8,4 +8,5 @@
       apt:
         pkg:
           - ansible
+          - tree
           - jq
