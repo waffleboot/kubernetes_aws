@@ -27,17 +27,30 @@ terraform:
 ansible:
 	docker run --rm --name ansible -it -v ${PWD}/ansible:/ansible -v /Users/yangand/.aws:/.aws yangand/kubernetes_ansible
 
-install:
-	docker run --rm --name ansible -it \
+start_ansible:
+	docker run --rm --name ansible -d \
 	-v ${PWD}/ansible:/ansible \
 	-v ${PWD}/terraform:/terraform \
 	-v /Users/yangand/.aws:/.aws \
-	yangand/kubernetes_ansible ansible-playbook \
+	yangand/kubernetes_ansible tail -f /dev/null
+
+stop_ansible:
+	docker stop ansible
+
+run_ansible = \
+	docker exec -it ansible ansible-playbook \
 	--extra-vars public_master_ip=$(public_master_ip) \
 	--extra-vars public_worker_ip=$(public_worker_ip) \
-	-i /ansible/install/inventory.yaml \
-	/ansible/install/install_python.yaml \
-	/ansible/control/install_containerd.yaml \
+	-i /ansible/install/inventory.yaml
+
+install_python:
+	${run_ansible} /ansible/install/install_python.yaml
+
+install_containerd:
+	${run_ansible} /ansible/control/install_containerd.yaml
+
+install: start_ansible install_python install_containerd
+	${run_ansible} \
 	/ansible/control/install_k8s.yaml \
 	/ansible/control/install_helm.yaml \
 	/ansible/control/kubeadm_init.yaml \
@@ -55,15 +68,7 @@ install:
 	rm ansible/ca.crt
 
 reset:
-	docker run --rm --name ansible -it \
-	-v ${PWD}/ansible:/ansible \
-	-v ${PWD}/terraform:/terraform \
-	-v /Users/yangand/.aws:/.aws \
-	yangand/kubernetes_ansible ansible-playbook \
-	--extra-vars public_master_ip=$(public_master_ip) \
-	--extra-vars public_worker_ip=$(public_worker_ip) \
-	-i /ansible/install/inventory.yaml \
-	/ansible/reset/reset.yaml
+	${run_ansible} /ansible/reset/reset.yaml
 
 clean:
 	docker image prune -a
