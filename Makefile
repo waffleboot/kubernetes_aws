@@ -25,13 +25,14 @@ terraform:
 	docker run --rm --name terraform -it -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform
 
 ansible:
-	docker run --rm --name ansible -it -v ${PWD}/ansible:/ansible -v /Users/yangand/.aws:/.aws yangand/kubernetes_ansible
+	docker run --rm --name ansible -it -v ${PWD}/ansible:/ansible -v ${HOME}/.aws:/.aws yangand/kubernetes_ansible
 
 start_ansible:
 	docker run --rm --name ansible -d \
 	-v ${PWD}/ansible:/ansible \
 	-v ${PWD}/terraform:/terraform \
-	-v /Users/yangand/.aws:/.aws \
+	-v ${HOME}/.aws:/.aws \
+	-v ${HOME}/go/src/github.com/lyft/cni-ipvlan-vpc-k8s:/cni-ipvlan-vpc-k8s \
 	yangand/kubernetes_ansible tail -f /dev/null
 
 stop_ansible:
