@@ -32,7 +32,7 @@ start_ansible:
 	-v ${PWD}/ansible:/ansible \
 	-v ${PWD}/terraform:/terraform \
 	-v ${HOME}/.aws:/.aws \
-	-v ${HOME}/go/src/github.com/lyft/cni-ipvlan-vpc-k8s:/cni-ipvlan-vpc-k8s \
+	-v ${HOME}/go:/go \
 	yangand/kubernetes_ansible tail -f /dev/null
 
 stop_ansible:

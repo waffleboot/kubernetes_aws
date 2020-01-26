@@ -43,13 +43,13 @@
           CNI_VERSION="v0.8.2"
           curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz" | tar -C /opt/cni/bin -xz
     - copy:
-        src: /cni-ipvlan-vpc-k8s/cni-ipvlan-vpc-k8s-ipam
+        src: /go/src/github.com/lyft/cni-ipvlan-vpc-k8s/cni-ipvlan-vpc-k8s-ipam
         dest: /opt/cni/bin
     - copy:
-        src: /cni-ipvlan-vpc-k8s/cni-ipvlan-vpc-k8s-ipvlan
+        src: /go/src/github.com/lyft/cni-ipvlan-vpc-k8s/cni-ipvlan-vpc-k8s-ipvlan
         dest: /opt/cni/bin
     - copy:
-        src: /cni-ipvlan-vpc-k8s/cni-ipvlan-vpc-k8s-unnumbered-ptp
+        src: /go/src/github.com/lyft/cni-ipvlan-vpc-k8s/cni-ipvlan-vpc-k8s-unnumbered-ptp
         dest: /opt/cni/bin
     - file:
         path: /opt/cni/bin/cni-ipvlan-vpc-k8s-ipam

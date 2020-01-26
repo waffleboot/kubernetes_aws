@@ -14,3 +14,7 @@
         name: kubelet
         state: stopped
         enabled: no
+    - systemd:
+        name: containerd
+        state: stopped
+        enabled: no

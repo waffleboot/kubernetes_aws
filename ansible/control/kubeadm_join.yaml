@@ -18,6 +18,11 @@
   tasks:
     - shell: 
         cmd: echo "{{hostvars['master'].discovery_file}}" > discovery-file
-    - command: kubeadm join --token {{ hostvars['master']['token_id'] }}.{{ hostvars['master']['token_secret'] }} --node-name worker --discovery-file discovery-file
+    - command: kubeadm join --token {{ hostvars['master']['token_id'] }}.{{ hostvars['master']['token_secret'] }} --node-name worker --discovery-file discovery-file --ignore-preflight-errors=KubeletVersion
       register: output
     - debug: var=output.stdout_lines
+    - file:
+        path: /etc/kubernetes/manifests
+        state: directory
+        owner: ubuntu
+        group: ubuntu

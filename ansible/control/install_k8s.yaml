@@ -14,8 +14,18 @@
         curl -sSL "https://raw.githubusercontent.com/kubernetes/kubernetes/${RELEASE}/build/debs/kubelet.service" | sed "s:/usr/bin:/usr/local/bin:g" > /etc/systemd/system/kubelet.service
         mkdir -p /etc/systemd/system/kubelet.service.d
         curl -sSL "https://raw.githubusercontent.com/kubernetes/kubernetes/${RELEASE}/build/debs/10-kubeadm.conf" | sed "s:/usr/bin:/usr/local/bin:g" > /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+  # - copy:
+  #     src: /go/src/github.com/kubernetes/kubernetes/cmd/kubelet/kubelet
+  #     dest: /usr/local/bin/kubelet
+  - name: /etc/default/kubelet
+    shell:
+      cmd: |
+        cat > /etc/default/kubelet <<EOF
+        KUBELET_EXTRA_ARGS="-v=2"
+        EOF
   - name: kubelet
     systemd:
       name: kubelet
-      state: started
+      daemon_reload: yes
+      state: restarted
       enabled: yes

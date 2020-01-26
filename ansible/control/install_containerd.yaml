@@ -29,6 +29,9 @@
     - name: containerd
       apt:
         pkg: containerd
+    # - copy:
+    #     src: /go/src/github.com/containerd/containerd/cmd/containerd/containerd
+    #     dest: /usr/bin/containerd
     - name: containerd
       systemd:
         name: containerd
