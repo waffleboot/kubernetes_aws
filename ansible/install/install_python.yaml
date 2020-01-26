@@ -9,5 +9,6 @@
         pkg:
           - ansible
           - bridge-utils
+          - unzip
           - tree
           - jq

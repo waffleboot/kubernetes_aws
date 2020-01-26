@@ -26,21 +26,21 @@
       args:
         warn: no
 
-- hosts: localhost
-  gather_facts: no
-  tasks:
-    - archive:
-        path: /go/src/github.com/containerd/containerd/cmd/containerd/containerd
-        format: zip
-- hosts: all
-  become: yes
-  gather_facts: no
-  tasks:
-    - unarchive:
-        src: /go/src/github.com/containerd/containerd/cmd/containerd/containerd.zip
-        dest: /usr/bin
-    - systemd:
-        name: containerd
-        daemon_reload: yes
-        state: restarted
-        enabled: yes
+# - hosts: localhost
+#   gather_facts: no
+#   tasks:
+#     - archive:
+#         path: /go/src/github.com/containerd/containerd/cmd/containerd/containerd
+#         format: zip
+# - hosts: all
+#   become: yes
+#   gather_facts: no
+#   tasks:
+#     - unarchive:
+#         src: /go/src/github.com/containerd/containerd/cmd/containerd/containerd.zip
+#         dest: /usr/bin
+#     - systemd:
+#         name: containerd
+#         daemon_reload: yes
+#         state: restarted
+#         enabled: yes
