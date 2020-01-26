@@ -51,3 +51,12 @@
     - copy:
         src: /cni-ipvlan-vpc-k8s/cni-ipvlan-vpc-k8s-unnumbered-ptp
         dest: /opt/cni/bin
+    - file:
+        path: /opt/cni/bin/cni-ipvlan-vpc-k8s-ipam
+        mode: u+x
+    - file:
+        path: /opt/cni/bin/cni-ipvlan-vpc-k8s-ipvlan
+        mode: u+x
+    - file:
+        path: /opt/cni/bin/cni-ipvlan-vpc-k8s-unnumbered-ptp
+        mode: u+x
