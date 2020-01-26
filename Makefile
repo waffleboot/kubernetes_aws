@@ -27,7 +27,7 @@ terraform:
 ansible:
 	docker run --rm --name ansible -it -v ${PWD}/ansible:/ansible -v ${HOME}/.aws:/.aws yangand/kubernetes_ansible
 
-start_ansible:
+start:
 	docker run --rm --name ansible -d \
 	-v ${PWD}/ansible:/ansible \
 	-v ${PWD}/terraform:/terraform \
@@ -35,7 +35,7 @@ start_ansible:
 	-v ${HOME}/go:/go \
 	yangand/kubernetes_ansible tail -f /dev/null
 
-stop_ansible:
+stop:
 	docker stop ansible
 
 run_ansible = \
