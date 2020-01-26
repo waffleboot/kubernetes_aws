@@ -31,11 +31,16 @@
   gather_facts: no
   become: yes
   tasks:
+    - name: /opt/cni/bin
+      file:
+        path: /opt/cni/bin
+        state: directory
+        owner: ubuntu
+        group: ubuntu
     - name: CNI plugins
       shell:
         cmd: |
           CNI_VERSION="v0.8.2"
-          mkdir -p /opt/cni/bin
           curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz" | tar -C /opt/cni/bin -xz
     - copy:
         src: /cni-ipvlan-vpc-k8s/cni-ipvlan-vpc-k8s-ipam
