@@ -19,5 +19,3 @@
   gather_facts: no
   tasks:
     - command: kubectl taint nodes master node-role.kubernetes.io/master=:NoSchedule-
-    - command: kubectl taint nodes master node-role.kubernetes.io/master=:PreferNoSchedule
-    - command: kubectl delete -n kube-system deploy/coredns
