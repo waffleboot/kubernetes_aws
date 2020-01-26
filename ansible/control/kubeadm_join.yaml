@@ -21,5 +21,3 @@
     - command: kubeadm join --token {{ hostvars['master']['token_id'] }}.{{ hostvars['master']['token_secret'] }} --node-name worker --discovery-file discovery-file
       register: output
     - debug: var=output.stdout_lines
-
-    # --discovery-token-unsafe-skip-ca-verification
