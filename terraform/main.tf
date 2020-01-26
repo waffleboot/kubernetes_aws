@@ -29,6 +29,16 @@ resource "aws_subnet" "public" {
   }
 }
 
+resource "aws_subnet" "kubernetes" {
+  vpc_id                  = aws_vpc.test.id
+  cidr_block              = "192.168.0.64/26"
+  availability_zone       = "eu-north-1b"
+  tags = {
+    Name = "kubernetes"
+    kubernetes_kubelet = true
+  }
+}
+
 resource "aws_internet_gateway" "test" {
   vpc_id = aws_vpc.test.id
   tags = {
@@ -50,6 +60,22 @@ resource "aws_route_table" "public" {
 resource "aws_route_table_association" "public" {
   subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table" "kubernetes" {
+  vpc_id = aws_vpc.test.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.test.id
+  }
+  tags = {
+    Name = "kubernetes"
+  }
+}
+
+resource "aws_route_table_association" "kubernetes" {
+  subnet_id      = aws_subnet.kubernetes.id
+  route_table_id = aws_route_table.kubernetes.id
 }
 
 resource "aws_security_group" "public" {
