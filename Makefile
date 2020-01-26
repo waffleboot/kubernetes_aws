@@ -50,14 +50,16 @@ install_python:
 install_containerd:
 	${run_ansible} /ansible/control/install_containerd.yaml
 
-install: start_ansible install_python install_containerd
+install_network:
+	${run_ansible} /ansible/control/install_network.yaml
+
+install: install_python install_containerd install_network
 	${run_ansible} \
 	/ansible/control/install_k8s.yaml \
 	/ansible/control/install_helm.yaml \
 	/ansible/control/kubeadm_init.yaml \
 	/ansible/control/kubeadm_join.yaml \
 	/ansible/control/user_admin.yaml \
-	/ansible/control/network.yaml \
 	/ansible/control/git.yaml
 	kubectl config set-cluster kubernetes --server=https://$(public_master_ip):6443
 	kubectl config set-cluster kubernetes --certificate-authority=ansible/ca.crt --embed-certs=true

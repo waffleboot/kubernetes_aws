@@ -1,0 +1,48 @@
+- hosts: all
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: ip_forward
+      shell: echo 1 > /proc/sys/net/ipv4/ip_forward
+    - shell: modprobe br_netfilter
+    - name: /etc/cni/net.d
+      file:
+        path: /etc/cni/net.d
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+- hosts: master
+  gather_facts: no
+  become: no
+  tasks:
+    - name: /etc/cni/net.d/master.conf
+      copy:
+        src: /ansible/control/mynet/master.conf
+        dest: /etc/cni/net.d/master.conflist
+- hosts: worker
+  gather_facts: no
+  become: no
+  tasks:
+    - name: /etc/cni/net.d/worker.conf
+      copy:
+        src: /ansible/control/mynet/worker.conf
+        dest: /etc/cni/net.d/worker.conflist
+- hosts: all
+  gather_facts: no
+  become: yes
+  tasks:
+    - copy:
+        src: /cni-ipvlan-vpc-k8s/cni-ipvlan-vpc-k8s-ipam
+        dest: /opt/cni/bin
+    - copy:
+        src: /cni-ipvlan-vpc-k8s/cni-ipvlan-vpc-k8s-ipvlan
+        dest: /opt/cni/bin
+    - copy:
+        src: /cni-ipvlan-vpc-k8s/cni-ipvlan-vpc-k8s-unnumbered-ptp
+        dest: /opt/cni/bin
+    - name: CNI plugins
+      shell:
+        cmd: |
+          CNI_VERSION="v0.8.2"
+          mkdir -p /opt/cni/bin
+          curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz" | tar -C /opt/cni/bin -xz

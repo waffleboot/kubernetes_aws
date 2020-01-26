@@ -2,13 +2,7 @@
   gather_facts: no
   become: yes
   tasks:
-  - name: install CNI plugins
-    shell:
-      cmd: |
-        CNI_VERSION="v0.8.2"
-        mkdir -p /opt/cni/bin
-        curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz" | tar -C /opt/cni/bin -xz
-  - name: install kubeadm, kubelet, kubectl
+  - name: kubeadm, kubelet, kubectl
     shell:
       executable: /bin/bash
       cmd: |
@@ -25,8 +19,3 @@
       name: kubelet
       state: started
       enabled: yes
-  - name: ip_forward
-    shell: echo 1 > /proc/sys/net/ipv4/ip_forward
-  - shell: modprobe br_netfilter
-  - name:
-    shell: echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables
