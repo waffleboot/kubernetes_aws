@@ -1,45 +1,46 @@
 - hosts: all
   become: yes
   gather_facts: no
+  vars:
+    CRICTL_VERSION: v1.16.0
   tasks:
-    - name: /etc/containerd
-      file:
-        path: /etc/containerd/
+    - file:
+        path: /etc/containerd
         state: directory
-        owner: ubuntu
-        group: ubuntu
-    - name: /etc/containerd/config.toml
-      shell:
-        cmd: |
-          cat > /etc/containerd/config.toml <<EOF
+    - copy: 
+        dest: /etc/containerd/config.toml
+        content: |
           #[debug]
           #  level = "trace"
-          EOF
-    - name: /etc/systemd/system/containerd.service.d
-      file:
+    - file:
         path: /etc/systemd/system/containerd.service.d
         state: directory
-    - name: /etc/systemd/system/containerd.service.d/override.conf
-      shell:
-        cmd: |
-          cat > /etc/systemd/system/containerd.service.d/override.conf <<EOF
+    - copy:
+        dest: /etc/systemd/system/containerd.service.d/override.conf
+        content: |
           [Service]
           #Environment="GODEBUG=http2debug=1"
-          EOF
-    - name: containerd
-      apt:
+    - apt:
         pkg: containerd
-    # - copy:
-    #     src: /go/src/github.com/containerd/containerd/cmd/containerd/containerd
-    #     dest: /usr/bin/containerd
-    - name: containerd
-      systemd:
+    - shell: curl -L "https://github.com/kubernetes-sigs/cri-tools/releases/download/{{CRICTL_VERSION}}/crictl-{{CRICTL_VERSION}}-linux-amd64.tar.gz" | tar -C /usr/local/bin -xz
+      args:
+        warn: no
+
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - archive:
+        path: /go/src/github.com/containerd/containerd/cmd/containerd/containerd
+        format: zip
+- hosts: all
+  become: yes
+  gather_facts: no
+  tasks:
+    - unarchive:
+        src: /go/src/github.com/containerd/containerd/cmd/containerd/containerd.zip
+        dest: /usr/bin
+    - systemd:
         name: containerd
         daemon_reload: yes
         state: restarted
         enabled: yes
-    - name: crictl
-      shell:
-        cmd: |
-          CRICTL_VERSION="v1.16.0"
-          curl -L "https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz" | tar -C /usr/local/bin -xz
