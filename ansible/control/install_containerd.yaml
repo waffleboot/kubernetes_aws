@@ -13,8 +13,8 @@
       shell:
         cmd: |
           cat > /etc/containerd/config.toml <<EOF
-          [debug]
-            level = "trace"
+          #[debug]
+          #  level = "trace"
           EOF
 
     - name: /etc/systemd/system/containerd.service.d
@@ -26,7 +26,7 @@
         cmd: |
           cat > /etc/systemd/system/containerd.service.d/override.conf <<EOF
           [Service]
-          Environment="GODEBUG=http2debug=1"
+          #Environment="GODEBUG=http2debug=1"
           EOF
 
     - name: containerd
