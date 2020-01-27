@@ -11,22 +11,14 @@
         state: directory
         owner: ubuntu
         group: ubuntu
-- hosts: master
+
+- hosts: all
   gather_facts: no
   become: no
   tasks:
-    - name: /etc/cni/net.d/master.conf
-      copy:
-        src: /ansible/control/mynet/master.conf
-        dest: /etc/cni/net.d/master.conflist
-- hosts: worker
-  gather_facts: no
-  become: no
-  tasks:
-    - name: /etc/cni/net.d/worker.conf
-      copy:
-        src: /ansible/control/mynet/worker.conf
-        dest: /etc/cni/net.d/worker.conflist
+    - template:
+        src: /ansible/control/mynet/mynet.conf
+        dest: /etc/cni/net.d/mynet.conflist
 - hosts: all
   gather_facts: no
   become: yes

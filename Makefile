@@ -1,7 +1,10 @@
 public_master_ip  = $(shell cat terraform/public_master_ip)
 public_worker_ip  = $(shell cat terraform/public_worker_ip)
+default_security_group = $(shell cat terraform/default_security_group)
 
-build: apply
+all: apply
+	sleep 5
+	$(MAKE) ssh_config start install_python install
 
 make_terraform:
 	docker build -t yangand/kubernetes_terraform terraform/docker
@@ -17,8 +20,6 @@ test_ansible:
 
 apply:
 	docker run --rm --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform apply -auto-approve
-	sleep 5
-	$(MAKE) ssh_config start install_python install
 
 destroy:
 	docker run --rm --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform destroy -auto-approve
@@ -44,6 +45,7 @@ run_ansible = \
 	docker exec -it ansible ansible-playbook \
 	--extra-vars public_master_ip=$(public_master_ip) \
 	--extra-vars public_worker_ip=$(public_worker_ip) \
+	--extra-vars default_security_group=$(default_security_group) \
 	-i /ansible/install/inventory.yaml
 
 install_python:

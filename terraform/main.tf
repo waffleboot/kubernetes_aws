@@ -10,6 +10,56 @@ provider "aws" {
   region  = "eu-north-1"
 }
 
+resource "aws_iam_role" "network_role" {
+  name               = "cni-ipvlan-vpc-k8s-role"
+  assume_role_policy = <<EOF
+{
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "network_policy" {
+  name   = "cni-ipvlan-vpc-k8s-network-policy"
+  role   = aws_iam_role.network_role.id
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "ec2:CreateNetworkInterface",
+        "ec2:DetachNetworkInterface",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DescribeVpcs",
+        "ec2:DescribeVpcPeeringConnections",
+        "ec2:ModifyNetworkInterfaceAttribute",
+        "ec2:DeleteNetworkInterface",
+        "ec2:AttachNetworkInterface",
+        "ec2:UnassignPrivateIpAddresses",
+        "ec2:DescribeSubnets",
+        "ec2:AssignPrivateIpAddresses"],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_instance_profile" "network_profile" {
+  name = "cni-ipvlan-vpc-k8s-network-profile"
+  role = aws_iam_role.network_role.id
+}
+
 resource "aws_vpc" "test" {
   cidr_block           = "192.168.0.0/24"
   enable_dns_support   = true
@@ -30,11 +80,11 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_subnet" "kubernetes" {
-  vpc_id                  = aws_vpc.test.id
-  cidr_block              = "192.168.0.64/26"
-  availability_zone       = "eu-north-1b"
+  vpc_id            = aws_vpc.test.id
+  cidr_block        = "192.168.0.64/26"
+  availability_zone = "eu-north-1b"
   tags = {
-    Name = "kubernetes"
+    Name               = "kubernetes"
     kubernetes_kubelet = true
   }
 }
@@ -108,6 +158,9 @@ resource "aws_security_group" "public" {
   tags = {
     Name = "public"
   }
+  provisioner "local-exec" {
+    command = "echo ${data.aws_security_groups.default.ids} > default_security_group"
+  }
 }
 
 data "aws_security_groups" "default" {
@@ -127,6 +180,7 @@ resource "aws_instance" "master" {
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = concat([aws_security_group.public.id], data.aws_security_groups.default.ids)
   key_name               = "ssh-key"
+  iam_instance_profile   = aws_iam_instance_profile.network_profile.id
   tags = {
     Name = "master"
   }
@@ -136,11 +190,12 @@ resource "aws_instance" "master" {
 }
 
 resource "aws_instance" "worker" {
-  ami           = local.ami
-  instance_type = "t3.micro"
-  subnet_id     = aws_subnet.public.id
+  ami                    = local.ami
+  instance_type          = "t3.micro"
+  subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = concat([aws_security_group.public.id], data.aws_security_groups.default.ids)
   key_name               = "master-to-worker"
+  iam_instance_profile   = aws_iam_instance_profile.network_profile.id
   tags = {
     Name = "worker"
   }
