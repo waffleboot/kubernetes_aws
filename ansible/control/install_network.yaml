@@ -11,7 +11,6 @@
         state: directory
         owner: ubuntu
         group: ubuntu
-
 - hosts: all
   gather_facts: no
   become: no
@@ -52,3 +51,8 @@
     - file:
         path: /opt/cni/bin/cni-ipvlan-vpc-k8s-unnumbered-ptp
         mode: u+x
+    - systemd:
+        name: containerd
+        daemon_reload: yes
+        state: restarted
+        enabled: yes

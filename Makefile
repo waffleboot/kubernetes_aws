@@ -1,6 +1,6 @@
 public_master_ip  = $(shell cat terraform/public_master_ip)
 public_worker_ip  = $(shell cat terraform/public_worker_ip)
-default_security_group = $(shell cat terraform/default_security_group)
+kubernetes_security_group = $(shell cat terraform/kubernetes-security-group)
 
 all: apply
 	sleep 5
@@ -45,7 +45,7 @@ run_ansible = \
 	docker exec -it ansible ansible-playbook \
 	--extra-vars public_master_ip=$(public_master_ip) \
 	--extra-vars public_worker_ip=$(public_worker_ip) \
-	--extra-vars default_security_group=$(default_security_group) \
+	--extra-vars kubernetes_security_group=$(kubernetes_security_group) \
 	-i /ansible/install/inventory.yaml
 
 install_python:
@@ -54,13 +54,13 @@ install_python:
 install_containerd:
 	${run_ansible} /ansible/control/install_containerd.yaml
 
-install_network:
+network:
 	${run_ansible} /ansible/control/install_network.yaml
 
-install_k8s:
+k8s:
 	${run_ansible} /ansible/control/install_k8s.yaml
 
-install: install_python install_containerd install_network install_k8s
+install: install_python install_containerd network k8s
 	${run_ansible} \
 	/ansible/control/install_helm.yaml \
 	/ansible/control/kubeadm_init.yaml \

@@ -5,4 +5,4 @@ terraform/terraform.tfstate
 *.tfstate.backup
 terraform/public_master_ip
 terraform/public_worker_ip
-terraform/default_security_group
+terraform/kubernetes-security-group

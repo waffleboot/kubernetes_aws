@@ -25,6 +25,11 @@
     - shell: curl -L "https://github.com/kubernetes-sigs/cri-tools/releases/download/{{CRICTL_VERSION}}/crictl-{{CRICTL_VERSION}}-linux-amd64.tar.gz" | tar -C /usr/local/bin -xz
       args:
         warn: no
+    - systemd:
+        name: containerd
+        daemon_reload: yes
+        state: restarted
+        enabled: yes
 
 # - hosts: localhost
 #   gather_facts: no

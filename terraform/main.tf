@@ -61,27 +61,36 @@ resource "aws_iam_instance_profile" "network_profile" {
 }
 
 resource "aws_vpc" "test" {
-  cidr_block           = "192.168.0.0/24"
+  cidr_block           = "192.168.0.0/16"
   enable_dns_support   = true
-  enable_dns_hostnames = true
+  enable_dns_hostnames = false
   tags = {
     Name = "test"
   }
 }
 
-resource "aws_subnet" "public" {
+# resource "aws_vpc" "kubernetes" {
+#   cidr_block           = "172.16.0.0/24"
+#   enable_dns_support   = true
+#   enable_dns_hostnames = false
+#   tags = {
+#     Name = "kubernetes"
+#   }
+# }
+
+resource "aws_subnet" "test" {
   vpc_id                  = aws_vpc.test.id
-  cidr_block              = "192.168.0.0/26"
+  cidr_block              = "192.168.0.0/24"
   availability_zone       = "eu-north-1b"
   map_public_ip_on_launch = true
   tags = {
-    Name = "public"
+    Name = "test"
   }
 }
 
 resource "aws_subnet" "kubernetes" {
   vpc_id            = aws_vpc.test.id
-  cidr_block        = "192.168.0.64/26"
+  cidr_block        = "192.168.1.0/24"
   availability_zone = "eu-north-1b"
   tags = {
     Name               = "kubernetes"
@@ -96,7 +105,7 @@ resource "aws_internet_gateway" "test" {
   }
 }
 
-resource "aws_route_table" "public" {
+resource "aws_route_table" "test" {
   vpc_id = aws_vpc.test.id
   route {
     cidr_block = "0.0.0.0/0"
@@ -107,28 +116,12 @@ resource "aws_route_table" "public" {
   }
 }
 
-resource "aws_route_table_association" "public" {
-  subnet_id      = aws_subnet.public.id
-  route_table_id = aws_route_table.public.id
+resource "aws_route_table_association" "test" {
+  subnet_id      = aws_subnet.test.id
+  route_table_id = aws_route_table.test.id
 }
 
-resource "aws_route_table" "kubernetes" {
-  vpc_id = aws_vpc.test.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.test.id
-  }
-  tags = {
-    Name = "kubernetes"
-  }
-}
-
-resource "aws_route_table_association" "kubernetes" {
-  subnet_id      = aws_subnet.kubernetes.id
-  route_table_id = aws_route_table.kubernetes.id
-}
-
-resource "aws_security_group" "public" {
+resource "aws_security_group" "test" {
   vpc_id = aws_vpc.test.id
   name   = "public"
   ingress {
@@ -156,10 +149,10 @@ resource "aws_security_group" "public" {
     to_port     = 7080
   }
   tags = {
-    Name = "public"
+    Name = "test"
   }
   provisioner "local-exec" {
-    command = "echo ${join(",", data.aws_security_groups.default.ids)} > default_security_group"
+    command = "echo ${join(",", data.aws_security_groups.default.ids)} > kubernetes-security-group"
   }
 }
 
@@ -177,8 +170,8 @@ data "aws_security_groups" "default" {
 resource "aws_instance" "master" {
   ami                    = local.ami
   instance_type          = "t3.micro"
-  subnet_id              = aws_subnet.public.id
-  vpc_security_group_ids = concat([aws_security_group.public.id], data.aws_security_groups.default.ids)
+  subnet_id              = aws_subnet.test.id
+  vpc_security_group_ids = concat([aws_security_group.test.id], data.aws_security_groups.default.ids)
   key_name               = "ssh-key"
   iam_instance_profile   = aws_iam_instance_profile.network_profile.id
   tags = {
@@ -192,8 +185,8 @@ resource "aws_instance" "master" {
 resource "aws_instance" "worker" {
   ami                    = local.ami
   instance_type          = "t3.micro"
-  subnet_id              = aws_subnet.public.id
-  vpc_security_group_ids = concat([aws_security_group.public.id], data.aws_security_groups.default.ids)
+  subnet_id              = aws_subnet.test.id
+  vpc_security_group_ids = concat([aws_security_group.test.id], data.aws_security_groups.default.ids)
   key_name               = "master-to-worker"
   iam_instance_profile   = aws_iam_instance_profile.network_profile.id
   tags = {
