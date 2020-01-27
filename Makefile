@@ -4,7 +4,7 @@ default_security_group = $(shell cat terraform/default_security_group)
 
 all: apply
 	sleep 5
-	$(MAKE) ssh_config start install_python install
+	$(MAKE) ssh_config start install_python install stop
 
 make_terraform:
 	docker build -t yangand/kubernetes_terraform terraform/docker
