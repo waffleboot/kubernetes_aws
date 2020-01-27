@@ -6,7 +6,7 @@ locals {
 }
 
 provider "aws" {
-  profile = "default"
+  profile = "kubernetes"
   region  = "eu-north-1"
 }
 
@@ -159,7 +159,7 @@ resource "aws_security_group" "public" {
     Name = "public"
   }
   provisioner "local-exec" {
-    command = "echo ${data.aws_security_groups.default.ids} > default_security_group"
+    command = "echo ${join(",", data.aws_security_groups.default.ids)} > default_security_group"
   }
 }
 
