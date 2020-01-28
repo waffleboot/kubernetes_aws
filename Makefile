@@ -3,8 +3,7 @@ public_worker_ip  = $(shell cat terraform/public_worker_ip)
 kubernetes_security_group = $(shell cat terraform/kubernetes-security-group)
 
 all: apply
-	sleep 5
-	$(MAKE) ssh_config start install_python install stop
+	$(MAKE) start python install stop
 
 make_terraform:
 	docker build -t yangand/kubernetes_terraform terraform/docker
@@ -20,6 +19,8 @@ test_ansible:
 
 apply:
 	docker run --rm --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform apply -auto-approve
+	sleep 30
+	$(MAKE) ssh_config
 
 destroy:
 	docker run --rm --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform destroy -auto-approve
@@ -48,7 +49,7 @@ run_ansible = \
 	--extra-vars kubernetes_security_group=$(kubernetes_security_group) \
 	-i /ansible/install/inventory.yaml
 
-install_python:
+python:
 	${run_ansible} /ansible/install/install_python.yaml
 
 install_containerd:
@@ -60,7 +61,7 @@ network:
 k8s:
 	${run_ansible} /ansible/control/install_k8s.yaml
 
-install: install_python install_containerd network k8s
+install: python install_containerd network k8s
 	${run_ansible} \
 	/ansible/control/install_helm.yaml \
 	/ansible/control/kubeadm_init.yaml \
