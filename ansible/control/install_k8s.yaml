@@ -17,7 +17,7 @@
     - copy:
         dest: /etc/default/kubelet
         content: |
-          KUBELET_EXTRA_ARGS="-v=2 --cluster-dns=192.168.0.2"
+          KUBELET_EXTRA_ARGS="-v=2"
     - systemd:
         name: kubelet
         daemon_reload: yes

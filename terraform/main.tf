@@ -106,6 +106,12 @@ resource "aws_default_security_group" "test" {
   ingress {
     cidr_blocks = ["0.0.0.0/0"]
     protocol    = "tcp"
+    from_port   = 30000
+    to_port     = 30001
+  }
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    protocol    = "tcp"
     from_port   = 6443
     to_port     = 6443
   }

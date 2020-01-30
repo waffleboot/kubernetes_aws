@@ -19,7 +19,7 @@ test_ansible:
 
 apply:
 	docker run --rm --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform apply -auto-approve
-	sleep 30
+	sleep 15
 	$(MAKE) ssh_config
 
 destroy:
