@@ -52,7 +52,7 @@ run_ansible = \
 python:
 	${run_ansible} /ansible/install/install_python.yaml
 
-install_containerd:
+containerd:
 	${run_ansible} /ansible/control/install_containerd.yaml
 
 network:
@@ -61,18 +61,23 @@ network:
 k8s:
 	${run_ansible} /ansible/control/install_k8s.yaml
 
-install: python install_containerd network k8s
-	${run_ansible} \
-	/ansible/control/install_helm.yaml \
-	/ansible/control/kubeadm_init.yaml \
-	/ansible/control/kubeadm_join.yaml \
-	/ansible/control/user_admin.yaml \
-	/ansible/control/git.yaml
+kubeadm:
+	${run_ansible} /ansible/control/kubeadm_init.yaml /ansible/control/kubeadm_join.yaml
+
+local_kubectl:
+	${run_ansible} /ansible/control/user_admin.yaml
 	kubectl config set-cluster kubernetes --server=https://$(public_master_ip):6443
 	kubectl config set-cluster kubernetes --certificate-authority=ansible/ca.crt --embed-certs=true
 	kubectl config set-credentials yangand --client-certificate=ansible/yangand.crt  --client-key=ansible/yangand.key --embed-certs=true
 	kubectl config set-context kubernetes-yangand --cluster=kubernetes --user=yangand
 	kubectl config use-context kubernetes-yangand
+
+install: python containerd network k8s kubeadm
+	${run_ansible} \
+	/ansible/control/install_helm.yaml \
+	/ansible/control/user_admin.yaml \
+	/ansible/control/git.yaml
+	$(MAKE) local_kubectl
 	rm ansible/yangand.crt
 	rm ansible/yangand.key
 	rm ansible/ca.crt

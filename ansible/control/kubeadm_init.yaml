@@ -2,19 +2,24 @@
   gather_facts: no
   become: yes
   tasks:
-    - name: kubeadm init
-      command: kubeadm init --node-name master --apiserver-cert-extra-sans '{{ public_master_ip }}' --ignore-preflight-errors=KubeletVersion
-      register: output
-    - debug: var=output.stdout_lines
-    - shell:
-        cmd: |
-          mkdir /home/ubuntu/.kube
-          cp /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
-    - file:
-        path: /home/ubuntu/.kube
-        owner: ubuntu
-        group: ubuntu
-        recurse: yes
+    - block:
+        - name: kubeadm init
+          command: kubeadm init --node-name master --apiserver-cert-extra-sans '{{ public_master_ip }}' --ignore-preflight-errors=KubeletVersion
+          register: output
+        - debug: var=output.stdout_lines
+        - shell:
+            cmd: |
+              mkdir /home/ubuntu/.kube
+              cp /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
+        - file:
+            path: /home/ubuntu/.kube
+            owner: ubuntu
+            group: ubuntu
+            recurse: yes
+      rescue:
+        - debug: var=output.stderr_lines
+        - fail:
+            msg: "kubeadm init failed"
 - hosts: master
   gather_facts: no
   tasks:
