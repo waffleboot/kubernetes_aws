@@ -71,6 +71,9 @@ local_kubectl:
 	kubectl config set-credentials yangand --client-certificate=ansible/yangand.crt  --client-key=ansible/yangand.key --embed-certs=true
 	kubectl config set-context kubernetes-yangand --cluster=kubernetes --user=yangand
 	kubectl config use-context kubernetes-yangand
+	rm ansible/yangand.crt
+	rm ansible/yangand.key
+	rm ansible/ca.crt
 
 install: python containerd network k8s kubeadm
 	${run_ansible} \
@@ -78,9 +81,6 @@ install: python containerd network k8s kubeadm
 	/ansible/control/user_admin.yaml \
 	/ansible/control/git.yaml
 	$(MAKE) local_kubectl
-	rm ansible/yangand.crt
-	rm ansible/yangand.key
-	rm ansible/ca.crt
 
 reset:
 	${run_ansible} /ansible/reset/reset.yaml
