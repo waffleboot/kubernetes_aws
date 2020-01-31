@@ -10,5 +10,6 @@
           - ansible
           - bridge-utils
           - unzip
+          - socat
           - tree
           - jq
