@@ -12,6 +12,8 @@
         content: |
           #[debug]
           #  level = "trace"
+          [plugins.cri.registry.mirrors."ip-192-168-0-194.eu-north-1.compute.internal:30000"]
+           endpoint = ["http://ip-192-168-0-194.eu-north-1.compute.internal:30000"]
     - file:
         path: /etc/systemd/system/containerd.service.d
         state: directory
