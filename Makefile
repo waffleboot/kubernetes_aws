@@ -2,37 +2,38 @@ public_master_ip  = $(shell cat terraform/public_master_ip)
 public_worker_ip  = $(shell cat terraform/public_worker_ip)
 kubernetes_security_group = $(shell cat terraform/kubernetes-security-group)
 
-all: apply
-	$(MAKE) start python install stop
+all: apply start python install stop
 
 make_terraform:
 	docker build -t yangand/kubernetes_terraform terraform/docker
 
 test_terraform:
-	docker run --rm -it yangand/kubernetes_terraform
+	${docker_run} --rm -it yangand/kubernetes_terraform
 
 make_ansible:
 	docker build -t yangand/kubernetes_ansible ansible/docker
 
 test_ansible:
-	docker run --rm -it yangand/kubernetes_ansible
+	${docker_run} --rm -it yangand/kubernetes_ansible
+
+docker_run = docker run
 
 apply:
-	docker run --rm --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform apply -auto-approve
+	${docker_run} --rm --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform apply -auto-approve
 	sleep 15
 	$(MAKE) ssh_config
 
 destroy:
-	docker run --rm --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform destroy -auto-approve
+	${docker_run} --rm --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform destroy -auto-approve
 
 terraform:
-	docker run --rm --name terraform -it -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform
+	${docker_run} --rm --name terraform -it -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform
 
 ansible:
-	docker run --rm --name ansible -it -v ${PWD}/ansible:/ansible -v ${HOME}/.aws:/.aws yangand/kubernetes_ansible
+	${docker_run} --rm --name ansible -it -v ${PWD}/ansible:/ansible -v ${HOME}/.aws:/.aws yangand/kubernetes_ansible
 
 start:
-	docker run --rm --name ansible -d \
+	${docker_run} --rm --name ansible -d \
 	-v ${PWD}/ansible:/ansible \
 	-v ${PWD}/terraform:/terraform \
 	-v ${HOME}/.aws:/.aws \
