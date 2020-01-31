@@ -26,3 +26,4 @@
     - command: kubectl label node master node-role.kubernetes.io/registry=
     - command: kubectl taint node master node-role.kubernetes.io/master=:NoSchedule-
     - command: kubectl scale --replicas=1 deploy/coredns -n kube-system
+    - command: kubectl patch daemonset kube-proxy --type=json -p='[{"op":"add","path":"/spec/template/spec/containers/0/command/-","value":"-v=5"}]' -n kube-system
