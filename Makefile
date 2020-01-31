@@ -8,32 +8,32 @@ make_terraform:
 	docker build -t yangand/kubernetes_terraform terraform/docker
 
 test_terraform:
-	${docker_run} --rm -it yangand/kubernetes_terraform
+	${docker_run} yangand/kubernetes_terraform
 
 make_ansible:
 	docker build -t yangand/kubernetes_ansible ansible/docker
 
 test_ansible:
-	${docker_run} --rm -it yangand/kubernetes_ansible
+	${docker_run} yangand/kubernetes_ansible
 
-docker_run = docker run
+docker_run = docker run --rm -it
 
 apply:
-	${docker_run} --rm --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform apply -auto-approve
+	${docker_run} --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform apply -auto-approve
 	sleep 15
 	$(MAKE) ssh_config
 
 destroy:
-	${docker_run} --rm --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform destroy -auto-approve
+	${docker_run} --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform destroy -auto-approve
 
 terraform:
-	${docker_run} --rm --name terraform -it -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform
+	${docker_run} --name terraform -it -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform
 
 ansible:
-	${docker_run} --rm --name ansible -it -v ${PWD}/ansible:/ansible -v ${HOME}/.aws:/.aws yangand/kubernetes_ansible
+	${docker_run} --name ansible -it -v ${PWD}/ansible:/ansible -v ${HOME}/.aws:/.aws yangand/kubernetes_ansible
 
 start:
-	${docker_run} --rm --name ansible -d \
+	${docker_run} --name ansible -d \
 	-v ${PWD}/ansible:/ansible \
 	-v ${PWD}/terraform:/terraform \
 	-v ${HOME}/.aws:/.aws \
