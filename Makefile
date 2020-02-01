@@ -38,6 +38,7 @@ registry:
 	kubectl create -f ansible/control/k8s/registry.yaml
 	docker pull nginx
 	docker tag nginx ${public_master_dns}:30000/nginx
+	sleep 10
 	docker push ${public_master_dns}:30000/nginx
 
 nginx:
@@ -76,6 +77,7 @@ k8s:
 
 kubeadm:
 	${run_ansible} /ansible/control/kubeadm_init.yaml /ansible/control/kubeadm_join.yaml
+	$(MAKE)	local_kubectl
 
 local_kubectl:
 	${run_ansible} /ansible/control/user_admin.yaml
@@ -91,9 +93,7 @@ local_kubectl:
 install: python containerd network k8s kubeadm
 	${run_ansible} \
 	/ansible/control/install_helm.yaml \
-	/ansible/control/user_admin.yaml \
 	/ansible/control/git.yaml
-	$(MAKE) local_kubectl
 
 reset:
 	${run_ansible} /ansible/reset/reset.yaml

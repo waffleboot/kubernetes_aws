@@ -3,8 +3,18 @@
   become: yes
   tasks:
     - block:
+        - copy:
+            dest: kubeadm.conf
+            content: |
+              apiVersion: kubeadm.k8s.io/v1beta2
+              kind: ClusterConfiguration
+              apiServer:
+                certSANs: ['{{ public_master_ip }}']
+                extraArgs:
+                  enable-admission-plugins: PodPreset,NodeRestriction
+                  runtime-config: settings.k8s.io/v1alpha1=true
         - name: kubeadm init
-          command: kubeadm init --node-name master --apiserver-cert-extra-sans '{{ public_master_ip }}' --ignore-preflight-errors=KubeletVersion
+          command: kubeadm init --config kubeadm.conf --node-name master --ignore-preflight-errors=KubeletVersion
           register: output
         - debug: var=output.stdout_lines
         - shell:

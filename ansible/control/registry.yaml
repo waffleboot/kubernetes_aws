@@ -54,7 +54,9 @@
     - copy:
         src: /.aws/awsRootCA.crt
         dest: /usr/share/ca-certificates/extra/awsRootCA.crt
-    - command: dpkg-reconfigure ca-certificates --default-priority
+    - lineinfile:
+        path: /etc/ca-certificates.conf
+        line: extra/awsRootCA.crt
     - command: update-ca-certificates
     - systemd:
         name: containerd
