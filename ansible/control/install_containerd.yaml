@@ -10,10 +10,8 @@
     - copy: 
         dest: /etc/containerd/config.toml
         content: |
-          #[debug]
-          #  level = "trace"
-          [plugins.cri.registry.mirrors."ip-192-168-0-194.eu-north-1.compute.internal:30000"]
-           endpoint = ["http://ip-192-168-0-194.eu-north-1.compute.internal:30000"]
+          [debug]
+            level = "debug"
     - file:
         path: /etc/systemd/system/containerd.service.d
         state: directory

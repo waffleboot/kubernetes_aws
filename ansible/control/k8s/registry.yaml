@@ -39,7 +39,19 @@ spec:
               - matchExpressions:
                 - key: "node-role.kubernetes.io/registry"
                   operator: Exists
+      volumes:
+        - name: tls
+          secret:
+            secretName: registry-secret
       containers:
         - image: registry:2
           name: registry
+          env:
+            - name: REGISTRY_HTTP_TLS_CERTIFICATE
+              value: /opt/tls.crt
+            - name: REGISTRY_HTTP_TLS_KEY
+              value: /opt/tls.key
+          volumeMounts:
+            - name: tls
+              mountPath: /opt
 ---

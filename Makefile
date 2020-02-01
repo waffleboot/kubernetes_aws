@@ -32,6 +32,12 @@ terraform:
 ansible:
 	${docker_run} --name ansible -it -v ${PWD}/ansible:/ansible -v ${HOME}/.aws:/.aws yangand/kubernetes_ansible
 
+registry:
+	${run_ansible} /ansible/control/registry.yaml
+	docker pull nginx
+	docker tag nginx ec2-13-53-193-160.eu-north-1.compute.amazonaws.com:30000/nginx
+	docker push ec2-13-53-193-160.eu-north-1.compute.amazonaws.com:30000/nginx
+
 start:
 	${docker_run} --name ansible -d \
 	-v ${PWD}/ansible:/ansible \

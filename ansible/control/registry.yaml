@@ -1,0 +1,58 @@
+- hosts: master
+  gather_facts: no
+  become: yes
+  tasks:
+    - file:
+        path: tmp
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+    - mount:
+        path: tmp
+        src: tmpfs
+        fstype: tmpfs
+        state: mounted
+        boot: no
+- hosts: master
+  gather_facts: no
+  tasks:
+    - command: openssl genrsa -out tmp/registry.key 2048
+    - command: openssl req -new -key tmp/registry.key -out tmp/registry.csr -subj '/CN=ec2-13-53-193-160.eu-north-1.compute.amazonaws.com'
+    - fetch:
+        src: tmp/registry.csr
+        dest: /ansible/
+        flat: yes
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - command: openssl x509 -req -in /ansible/registry.csr -CA /.aws/awsRootCA.crt -CAkey /.aws/awsRootCA.key -CAcreateserial -out /ansible/registry.crt -days 5000
+- hosts: master
+  gather_facts: no
+  tasks:
+    - copy:
+        src: /ansible/registry.crt
+        dest: tmp/
+    # - command: kubectl create namespace registry
+    # - command: kubectl create secret tls registry-secret -n registry --cert=tmp/registry.crt --key=tmp/registry.key
+- hosts: master
+  gather_facts: no
+  become: yes
+  tasks:
+    - mount:
+        path: tmp
+        state: unmounted
+    - file:
+        path: tmp
+        state: absent
+- hosts: all
+  gather_facts: no
+  become: yes
+  tasks:
+    - file:
+        path: /usr/share/ca-certificates/extra
+        state: directory
+    - copy:
+        src: /.aws/awsRootCA.crt
+        dest: /usr/share/ca-certificates/extra/awsRootCA.crt
+    - command: dpkg-reconfigure ca-certificates --default-priority
+    - command: update-ca-certificates
