@@ -184,6 +184,9 @@ resource "aws_instance" "master" {
   provisioner "local-exec" {
     command = "echo ${aws_instance.master.public_ip} > public_master_ip"
   }
+  provisioner "local-exec" {
+    command = "echo ${aws_instance.master.public_dns} > public_master_dns"
+  }
 }
 
 resource "aws_instance" "worker" {

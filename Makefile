@@ -1,8 +1,9 @@
 public_master_ip  = $(shell cat terraform/public_master_ip)
 public_worker_ip  = $(shell cat terraform/public_worker_ip)
+public_master_dns = $(shell cat terraform/public_master_dns)
 kubernetes_security_group = $(shell cat terraform/kubernetes-security-group)
 
-all: apply start python install stop
+all: apply start python install registry stop
 
 make_terraform:
 	docker build -t yangand/kubernetes_terraform terraform/docker
@@ -34,9 +35,13 @@ ansible:
 
 registry:
 	${run_ansible} /ansible/control/registry.yaml
+	kubectl create -f ansible/control/k8s/registry.yaml
 	docker pull nginx
-	docker tag nginx ec2-13-53-193-160.eu-north-1.compute.amazonaws.com:30000/nginx
-	docker push ec2-13-53-193-160.eu-north-1.compute.amazonaws.com:30000/nginx
+	docker tag nginx ${public_master_dns}:30000/nginx
+	docker push ${public_master_dns}:30000/nginx
+
+nginx:
+	kubectl create -f ansible/control/k8s/nginx.yaml
 
 start:
 	${docker_run} --name ansible -d \
@@ -53,6 +58,7 @@ run_ansible = \
 	docker exec -it ansible ansible-playbook \
 	--extra-vars public_master_ip=$(public_master_ip) \
 	--extra-vars public_worker_ip=$(public_worker_ip) \
+	--extra-vars public_master_dns=$(public_master_dns) \
 	--extra-vars kubernetes_security_group=$(kubernetes_security_group) \
 	-i /ansible/install/inventory.yaml
 
