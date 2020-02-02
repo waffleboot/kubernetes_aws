@@ -115,6 +115,12 @@ resource "aws_default_security_group" "test" {
     from_port   = 6443
     to_port     = 6443
   }
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    protocol    = "tcp"
+    from_port   = 8080
+    to_port     = 8080
+  }
   egress {
     from_port   = 0
     to_port     = 0

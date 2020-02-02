@@ -3,7 +3,7 @@ public_worker_ip  = $(shell cat terraform/public_worker_ip)
 public_master_dns = $(shell cat terraform/public_master_dns)
 kubernetes_security_group = $(shell cat terraform/kubernetes-security-group)
 
-all: apply start python install registry stop
+all: apply start install registry stop
 
 make_terraform:
 	docker build -t yangand/kubernetes_terraform terraform/docker
@@ -39,13 +39,13 @@ registry:
 	docker pull nginx
 	docker tag nginx ${public_master_dns}:30000/nginx
 	sleep 10
-	docker push ${public_master_dns}:30000/nginx
+	-docker push ${public_master_dns}:30000/nginx
 
 nginx:
 	kubectl create -f ansible/control/k8s/nginx.yaml
 
 start:
-	${docker_run} --name ansible -d \
+	-${docker_run} --name ansible -d \
 	-v ${PWD}/ansible:/ansible \
 	-v ${PWD}/terraform:/terraform \
 	-v ${HOME}/.aws:/.aws \
