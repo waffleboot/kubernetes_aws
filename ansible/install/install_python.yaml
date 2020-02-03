@@ -9,6 +9,7 @@
         pkg:
           - ansible
           - bridge-utils
+          - cgroup-tools
           - unzip
           - socat
           - tree
