@@ -3,7 +3,8 @@
   become: yes
   tasks:
     - block:
-        - copy:
+        - name: kubeadm.conf
+          copy:
             dest: kubeadm.conf
             content: |
               apiVersion: kubeadm.k8s.io/v1beta2
@@ -17,11 +18,13 @@
           command: kubeadm init --config kubeadm.conf --node-name master --ignore-preflight-errors=KubeletVersion
           register: output
         - debug: var=output.stdout_lines
-        - shell:
+        - name: .kube
+          shell:
             cmd: |
               mkdir /home/ubuntu/.kube
               cp /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
-        - file:
+        - name: chown .kube
+          file:
             path: /home/ubuntu/.kube
             owner: ubuntu
             group: ubuntu
@@ -33,7 +36,11 @@
 - hosts: master
   gather_facts: no
   tasks:
-    - command: kubectl label node master node-role.kubernetes.io/registry=
-    - command: kubectl taint node master node-role.kubernetes.io/master=:NoSchedule-
-    - command: kubectl scale --replicas=1 deploy/coredns -n kube-system
-    - command: kubectl patch daemonset kube-proxy --type=json -p='[{"op":"add","path":"/spec/template/spec/containers/0/command/-","value":"-v=5"}]' -n kube-system
+    - name: master is registry
+      command: kubectl label node master node-role.kubernetes.io/registry=
+    - name: master is schedulable
+      command: kubectl taint node master node-role.kubernetes.io/master=:NoSchedule-
+    - name: coredns replicas=1
+      command: kubectl scale --replicas=1 deploy/coredns -n kube-system
+    - name: log kube-proxy
+      command: kubectl patch daemonset kube-proxy --type=json -p='[{"op":"add","path":"/spec/template/spec/containers/0/command/-","value":"-v=5"}]' -n kube-system
