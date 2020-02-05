@@ -2,18 +2,22 @@
   gather_facts: no
   become: yes
   tasks:
-    - command: kubeadm reset -f
+    - name: kubeadm reset
+      command: kubeadm reset -f
 - hosts: master
   gather_facts: no
   become: yes
   tasks:
-    - file:
+    - name: delete /etc/cni/net.d
+      file:
         path: /etc/cni/net.d
         state: absent
-    - file:
+    - name: delete helm
+      file:
         path: /usr/local/bin/helm
         state: absent
-    - systemd:
+    - name: stop kubelet
+      systemd:
         name: kubelet
         state: stopped
         enabled: no
