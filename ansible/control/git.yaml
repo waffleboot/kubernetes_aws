@@ -1,12 +1,16 @@
 - hosts: master
   gather_facts: no
   tasks:
-    - file:
+    - name: delete kubernetes dir
+      file:
         path: ~/kubernetes
         state: absent
-    - git:
+    - name: clone kubernetes
+      git:
         repo: https://github.com/kubernetes/kubernetes
         depth: 1
         dest: ~/kubernetes
-    - shell: find kubernetes -name '*_test.go' -type f -delete
-    - shell: find kubernetes -not -name '*.go' -and -type f -delete
+    - name: delete test files
+      shell: find kubernetes -name '*test*' -exec rm -rf {} \;
+    - name: delete non-Golang files
+      shell: find kubernetes -not -name '*.go' -and -type f -delete
