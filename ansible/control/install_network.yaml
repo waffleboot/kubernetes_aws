@@ -4,7 +4,8 @@
   tasks:
     - name: ip_forward
       shell: echo 1 > /proc/sys/net/ipv4/ip_forward
-    - shell: modprobe br_netfilter
+    - name: br_netfilter
+      shell: modprobe br_netfilter
     - name: /etc/cni/net.d
       file:
         path: /etc/cni/net.d
@@ -15,7 +16,8 @@
   gather_facts: no
   become: no
   tasks:
-    - template:
+    - name: /etc/cni/net.d/mynet.conflist
+      template:
         src: /ansible/control/mynet/mynet.conf
         dest: /etc/cni/net.d/mynet.conflist
 - hosts: all
@@ -33,25 +35,32 @@
         cmd: |
           CNI_VERSION="v0.8.2"
           curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz" | tar -C /opt/cni/bin -xz
-    - copy:
+    - name: copy cni-ipvlan-vpc-k8s-ipam
+      copy:
         src: /go/src/github.com/lyft/cni-ipvlan-vpc-k8s/cni-ipvlan-vpc-k8s-ipam
         dest: /opt/cni/bin
-    - copy:
+    - name: copy cni-ipvlan-vpc-k8s-ipvlan
+      copy:
         src: /go/src/github.com/lyft/cni-ipvlan-vpc-k8s/cni-ipvlan-vpc-k8s-ipvlan
         dest: /opt/cni/bin
-    - copy:
+    - name: copy cni-ipvlan-vpc-k8s-unnumbered-ptp
+      copy:
         src: /go/src/github.com/lyft/cni-ipvlan-vpc-k8s/cni-ipvlan-vpc-k8s-unnumbered-ptp
         dest: /opt/cni/bin
-    - file:
+    - name: chmod cni-ipvlan-vpc-k8s-ipam
+      file:
         path: /opt/cni/bin/cni-ipvlan-vpc-k8s-ipam
         mode: u+x
-    - file:
+    - name: chmod cni-ipvlan-vpc-k8s-ipvlan
+      file:
         path: /opt/cni/bin/cni-ipvlan-vpc-k8s-ipvlan
         mode: u+x
-    - file:
+    - name: chmod cni-ipvlan-vpc-k8s-unnumbered-ptp
+      file:
         path: /opt/cni/bin/cni-ipvlan-vpc-k8s-unnumbered-ptp
         mode: u+x
-    - systemd:
+    - name: restart containerd
+      systemd:
         name: containerd
         daemon_reload: yes
         state: restarted
