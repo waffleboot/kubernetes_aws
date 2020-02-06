@@ -91,12 +91,14 @@ local_kubectl:
 	rm ansible/ca.crt
 
 install: python containerd network k8s kubeadm
-	${run_ansible} \
-	/ansible/control/install_helm.yaml \
-	/ansible/control/git.yaml
+	${run_ansible} /ansible/control/install_helm.yaml
+	$(MAKE) kubernetes_git
 
 reset:
 	${run_ansible} /ansible/reset/reset.yaml
+
+kubernetes_git:
+	${run_ansible} /ansible/control/git.yaml
 
 clean:
 	docker image prune -a
