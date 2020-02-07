@@ -26,7 +26,15 @@
         owner: ubuntu
         group: ubuntu
     - name: patch /var/lib/kubelet/config.yaml
-      command: /home/ubuntu/yq /var/lib/kubelet/config.yaml 250m 250M
+      command: /home/ubuntu/yq /var/lib/kubelet/config.yaml 250m 250M podruntime.slice
+    - file:
+        path: /etc/systemd/system/kubelet.service.d
+        state: directory
+    - copy:
+        dest: /etc/systemd/system/kubelet.service.d/override.conf
+        content: |
+          [Service]
+          Slice=podruntime.slice
     - systemd:
         name: kubelet
         daemon_reload: yes
