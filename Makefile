@@ -76,7 +76,7 @@ k8s:
 	${run_ansible} /ansible/control/install_k8s.yaml
 
 kubeadm:
-	${run_ansible} /ansible/control/kubeadm_init.yaml /ansible/control/kubeadm_join.yaml
+	${run_ansible} /ansible/control/kubeadm_init.yaml /ansible/control/kubeadm_join.yaml /ansible/control/yq.yaml
 	$(MAKE)	local_kubectl
 
 local_kubectl:

@@ -1,0 +1,18 @@
+- hosts: all
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: yq
+      copy:
+        src: /go/bin/linux_amd64/yq
+        dest: yq
+        mode: ug+x
+        owner: ubuntu
+        group: ubuntu
+    - name: patch /var/lib/kubelet/config.yaml
+      command: /home/ubuntu/yq /var/lib/kubelet/config.yaml 250m 250M
+    - systemd:
+        name: kubelet
+        daemon_reload: yes
+        state: restarted
+        enabled: yes
