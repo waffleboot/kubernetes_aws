@@ -2,14 +2,13 @@
   gather_facts: no
   become: yes
   tasks:
-    - shell:
-        cmd: |
-          HELM_VERSION="v3.0.2"
-          mkdir -p /opt/helm && cd /opt/helm
-          curl -sO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz"
-          curl -sO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256"
-          sha256sum helm-${HELM_VERSION}-linux-amd64.tar.gz && cat helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256
-          tar -zxvf helm-${HELM_VERSION}-linux-amd64.tar.gz
+    - shell: |
+        HELM_VERSION="v3.0.2"
+        mkdir -p /opt/helm && cd /opt/helm
+        curl -sO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz"
+        curl -sO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256"
+        sha256sum helm-${HELM_VERSION}-linux-amd64.tar.gz && cat helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256
+        tar -zxvf helm-${HELM_VERSION}-linux-amd64.tar.gz
     - file:
         src: /opt/helm/linux-amd64/helm
         dest: /usr/local/bin/helm

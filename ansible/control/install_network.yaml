@@ -31,10 +31,9 @@
         owner: ubuntu
         group: ubuntu
     - name: CNI plugins
-      shell:
-        cmd: |
-          CNI_VERSION="v0.8.2"
-          curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz" | tar -C /opt/cni/bin -xz
+      shell: |
+        CNI_VERSION="v0.8.2"
+        curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz" | tar -C /opt/cni/bin -xz
     - name: copy cni-ipvlan-vpc-k8s-ipam
       copy:
         src: /go/src/github.com/lyft/cni-ipvlan-vpc-k8s/cni-ipvlan-vpc-k8s-ipam

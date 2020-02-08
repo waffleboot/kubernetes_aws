@@ -19,10 +19,9 @@
           register: output
         - debug: var=output.stdout_lines
         - name: .kube
-          shell:
-            cmd: |
-              mkdir /home/ubuntu/.kube
-              cp /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
+          shell: |
+            mkdir /home/ubuntu/.kube
+            cp /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
         - name: chown .kube
           file:
             path: /home/ubuntu/.kube
