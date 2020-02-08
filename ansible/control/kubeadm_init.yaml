@@ -10,7 +10,7 @@
               apiVersion: kubeadm.k8s.io/v1beta2
               kind: ClusterConfiguration
               apiServer:
-                certSANs: ['{{ public_master_ip }}']
+                certSANs: ['{{ ansible_host }}']
                 extraArgs:
                   enable-admission-plugins: PodPreset,NodeRestriction
                   runtime-config: settings.k8s.io/v1alpha1=true
