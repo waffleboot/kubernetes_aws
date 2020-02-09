@@ -7,3 +7,5 @@ terraform/public_master_ip
 terraform/public_worker_ip
 terraform/public_master_dns
 terraform/kubernetes-security-group
+ansible/registry.crt
+ansible/registry.csr

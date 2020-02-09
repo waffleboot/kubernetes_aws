@@ -20,11 +20,12 @@ test_ansible:
 docker_run = docker run --rm -it
 
 apply:
-	${docker_run} --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform apply -auto-approve
-	$(MAKE) ssh_config
+	@${docker_run} --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform apply -auto-approve
+	@$(MAKE) ssh_config
 
 destroy:
-	${docker_run} --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform destroy -auto-approve
+	@echo destroy aws infrastructure
+	@${docker_run} --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform destroy -auto-approve
 
 terraform:
 	${docker_run} --name terraform -it -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform
@@ -44,7 +45,7 @@ nginx:
 	kubectl create -f ansible/control/k8s/nginx.yaml
 
 start:
-	-${docker_run} --name ansible -d \
+	@-${docker_run} --name ansible -d \
 	-v ${PWD}/ansible:/ansible \
 	-v ${PWD}/terraform:/terraform \
 	-v ${HOME}/.aws:/.aws \
@@ -63,38 +64,37 @@ run_ansible = \
 	-i /ansible/install/inventory.yaml
 
 python:
-	${run_ansible} /ansible/install/install_python.yaml
+	@${run_ansible} /ansible/install/install_python.yaml
 
 containerd:
-	${run_ansible} /ansible/control/install_containerd.yaml
+	@${run_ansible} /ansible/control/install_containerd.yaml
 
 network:
-	${run_ansible} /ansible/control/install_network.yaml
+	@${run_ansible} /ansible/control/install_network.yaml
 
 k8s:
-	${run_ansible} /ansible/control/install_k8s.yaml
+	@${run_ansible} /ansible/control/install_k8s.yaml
 
 kubeadm:
-	${run_ansible} /ansible/control/kubeadm_init.yaml /ansible/control/kubeadm_join.yaml /ansible/control/yq.yaml
-	$(MAKE)	local_kubectl
+	@${run_ansible} /ansible/control/kubeadm_init.yaml /ansible/control/kubeadm_join.yaml /ansible/control/yq.yaml
+	@$(MAKE) local_kubectl
 
 local_kubectl:
-	${run_ansible} /ansible/control/user_admin.yaml
+	@${run_ansible} /ansible/control/user_admin.yaml
 	kubectl config set-cluster kubernetes --server=https://$(public_master_ip):6443
 	kubectl config set-cluster kubernetes --certificate-authority=ansible/ca.crt --embed-certs=true
 	kubectl config set-credentials yangand --client-certificate=ansible/yangand.crt  --client-key=ansible/yangand.key --embed-certs=true
 	kubectl config set-context kubernetes-yangand --cluster=kubernetes --user=yangand
 	kubectl config use-context kubernetes-yangand
-	rm ansible/yangand.crt
-	rm ansible/yangand.key
-	rm ansible/ca.crt
+	@rm ansible/yangand.crt
+	@rm ansible/yangand.key
+	@rm ansible/ca.crt
 
 install: python containerd network k8s kubeadm
 	${run_ansible} /ansible/control/install_helm.yaml
-	$(MAKE) kubernetes_git
 
 reset:
-	${run_ansible} /ansible/reset/reset.yaml
+	@${run_ansible} /ansible/reset/reset.yaml
 
 kubernetes_git:
 	${run_ansible} /ansible/control/git.yaml

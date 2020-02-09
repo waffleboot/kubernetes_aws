@@ -10,7 +10,7 @@
         owner: ubuntu
         group: ubuntu
     - name: patch /var/lib/kubelet/config.yaml
-      command: /home/ubuntu/yq /var/lib/kubelet/config.yaml 250m 250M
+      command: /home/ubuntu/yq /var/lib/kubelet/config.yaml 100m 100M
     - systemd:
         name: kubelet
         daemon_reload: yes
