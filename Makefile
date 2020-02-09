@@ -21,7 +21,6 @@ docker_run = docker run --rm -it
 
 apply:
 	${docker_run} --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform apply -auto-approve
-	sleep 15
 	$(MAKE) ssh_config
 
 destroy:
@@ -104,5 +103,5 @@ clean:
 	docker image prune -a
 
 ssh_config:
-	~/go/bin/ssh_config ~/.ssh master $(public_master_ip) ubuntu ~/.aws/id_rsa_master
-	~/go/bin/ssh_config ~/.ssh worker $(public_worker_ip) ubuntu ~/.aws/id_rsa_worker
+	~/go/bin/ssh_config ~/.ssh master "$(public_master_ip)" ubuntu ~/.aws/id_rsa_master
+	~/go/bin/ssh_config ~/.ssh worker "$(public_worker_ip)" ubuntu ~/.aws/id_rsa_worker
