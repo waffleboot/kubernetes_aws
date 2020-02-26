@@ -15,7 +15,7 @@
                   enable-admission-plugins: PodPreset,NodeRestriction
                   runtime-config: settings.k8s.io/v1alpha1=true
         - name: kubeadm init
-          command: kubeadm init --config kubeadm.conf --node-name master --ignore-preflight-errors=KubeletVersion
+          command: kubeadm init --config kubeadm.conf --node-name master --ignore-preflight-errors=KubeletVersion,Swap
           register: output
         - debug: var=output.stdout_lines
         - name: .kube

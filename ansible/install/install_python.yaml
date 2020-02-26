@@ -20,3 +20,8 @@
           - socat
           - tree
           - jq
+    - command: fallocate -l 3G /swapfile
+    - command: chmod 600 /swapfile
+    - command: mkswap /swapfile
+    - command: swapon /swapfile
+    - command: sysctl vm.swappiness=25

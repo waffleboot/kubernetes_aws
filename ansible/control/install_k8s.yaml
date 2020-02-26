@@ -17,7 +17,7 @@
     - copy:
         dest: /etc/default/kubelet
         content: |
-          KUBELET_EXTRA_ARGS="-v=2"
+          KUBELET_EXTRA_ARGS="-v=2 --fail-swap-on=false"
     - systemd:
         name: kubelet
         daemon_reload: yes
