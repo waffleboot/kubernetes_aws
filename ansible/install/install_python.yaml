@@ -21,6 +21,12 @@
           - socat
           - tree
           - jq
+    - lineinfile:
+        line: echo -e "\\033]1337;SetProfile=Prod\\a"
+        path: /home/ubuntu/.bashrc
+    - lineinfile:
+        line: echo -e "\\033]1337;SetProfile=Default\\a"
+        path: /home/ubuntu/.bash_logout
     - command: fallocate -l 3G /swapfile
     - command: chmod 600 /swapfile
     - command: mkswap /swapfile
