@@ -16,6 +16,7 @@
           - ansible
           - bridge-utils
           - cgroup-tools
+          - bpfcc-tools
           - unzip
           - socat
           - tree
