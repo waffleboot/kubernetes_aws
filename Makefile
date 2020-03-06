@@ -3,7 +3,7 @@ public_worker_ip  = $(shell cat terraform/public_worker_ip)
 public_master_dns = $(shell cat terraform/public_master_dns)
 kubernetes_security_group = $(shell cat terraform/kubernetes-security-group)
 
-all: apply start install registry stop
+all: create start install registry stop
 
 make_terraform:
 	docker build -t yangand/kubernetes_terraform terraform/docker
@@ -19,7 +19,7 @@ test_ansible:
 
 docker_run = docker run --rm -it
 
-apply:
+create:
 	@${docker_run} --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform apply -auto-approve
 	@$(MAKE) ssh_config
 
