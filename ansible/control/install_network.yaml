@@ -18,7 +18,7 @@
   tasks:
     - name: /etc/cni/net.d/mynet.conflist
       template:
-        src: /ansible/control/mynet/mynet.conf
+        src: /ansible/control/mynet/bridge/mynet.conf
         dest: /etc/cni/net.d/mynet.conflist
 - hosts: all
   gather_facts: no
