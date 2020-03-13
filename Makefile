@@ -20,18 +20,18 @@ test_ansible:
 docker_run = docker run --rm -it --init
 
 create:
-	@$(docker_run) --name terraform -w "$$(pwd)" -v "$$(pwd)/terraform":"$$(pwd)" -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform apply -auto-approve
+	@$(docker_run) --name terraform -w "$$(pwd)" -v "$$(pwd)/terraform":"$$(pwd)":delegated -v ~/.aws:/root/.aws:delegated yangand/kubernetes_terraform terraform apply -auto-approve
 	@$(MAKE) ssh_config
 
 destroy:
 	@echo destroy aws infrastructure
-	@$(docker_run) --name terraform -w "$$(pwd)" -v "$$(pwd)/terraform":"$$(pwd)" -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform destroy -auto-approve
+	@$(docker_run) --name terraform -w "$$(pwd)" -v "$$(pwd)/terraform":"$$(pwd)":delegated -v ~/.aws:/root/.aws:delegated yangand/kubernetes_terraform terraform destroy -auto-approve
 
 terraform:
-	$(docker_run) --name terraform -it -w "$$(pwd)" -v "$$(pwd)/terraform":"$$(pwd)" -v ~/.aws:/root/.aws yangand/kubernetes_terraform
+	$(docker_run) --name terraform -it -w "$$(pwd)" -v "$$(pwd)/terraform":"$$(pwd)":delegated -v ~/.aws:/root/.aws:delegated yangand/kubernetes_terraform
 
 ansible:
-	$(docker_run) --name ansible -it -v "$$(pwd)/ansible":"$$(pwd)" -v $(HOME)/.aws:/.aws yangand/kubernetes_ansible
+	$(docker_run) --name ansible -it -v "$$(pwd)/ansible":"$$(pwd)":delegated -v $(HOME)/.aws:/.aws:delegated yangand/kubernetes_ansible
 
 registry:
 	$(run_ansible) /ansible/control/registry.yaml
@@ -46,10 +46,10 @@ nginx:
 
 start:
 	@-$(docker_run) --name ansible -d \
-	-v "$$(pwd)/ansible":"/ansible" \
-	-v "$$(pwd)/terraform":"/terraform" \
-	-v $(HOME)/.aws:/.aws \
-	-v $(HOME)/go:/go \
+	-v "$$(pwd)/ansible":"/ansible":delegated \
+	-v "$$(pwd)/terraform":"/terraform":delegated \
+	-v ~/.aws:/.aws:delegated \
+	-v ~/go:/go:delegated \
 	yangand/kubernetes_ansible tail -f /dev/null
 
 stop:
