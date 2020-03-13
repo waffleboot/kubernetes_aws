@@ -17,7 +17,7 @@ make_ansible:
 test_ansible:
 	$(docker_run) yangand/kubernetes_ansible
 
-docker_run = docker run --rm -it
+docker_run = docker run --rm -it --init
 
 create:
 	@$(docker_run) --name terraform -w "$$(pwd)" -v "$$(pwd)/terraform":"$$(pwd)" -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform apply -auto-approve
