@@ -9,47 +9,47 @@ make_terraform:
 	docker build -t yangand/kubernetes_terraform terraform/docker
 
 test_terraform:
-	${docker_run} yangand/kubernetes_terraform
+	$(docker_run) yangand/kubernetes_terraform
 
 make_ansible:
 	docker build -t yangand/kubernetes_ansible ansible/docker
 
 test_ansible:
-	${docker_run} yangand/kubernetes_ansible
+	$(docker_run) yangand/kubernetes_ansible
 
 docker_run = docker run --rm -it
 
 create:
-	@${docker_run} --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform apply -auto-approve
+	@$(docker_run) --name terraform -w "$$(pwd)" -v "$$(pwd)/terraform":"$$(pwd)" -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform apply -auto-approve
 	@$(MAKE) ssh_config
 
 destroy:
 	@echo destroy aws infrastructure
-	@${docker_run} --name terraform -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform destroy -auto-approve
+	@$(docker_run) --name terraform -w "$$(pwd)" -v "$$(pwd)/terraform":"$$(pwd)" -v ~/.aws:/root/.aws yangand/kubernetes_terraform terraform destroy -auto-approve
 
 terraform:
-	${docker_run} --name terraform -it -w /opt -v ${PWD}/terraform:/opt -v ~/.aws:/root/.aws yangand/kubernetes_terraform
+	$(docker_run) --name terraform -it -w "$$(pwd)" -v "$$(pwd)/terraform":"$$(pwd)" -v ~/.aws:/root/.aws yangand/kubernetes_terraform
 
 ansible:
-	${docker_run} --name ansible -it -v ${PWD}/ansible:/ansible -v ${HOME}/.aws:/.aws yangand/kubernetes_ansible
+	$(docker_run) --name ansible -it -v "$$(pwd)/ansible":"$$(pwd)" -v $(HOME)/.aws:/.aws yangand/kubernetes_ansible
 
 registry:
-	${run_ansible} /ansible/control/registry.yaml
+	$(run_ansible) /ansible/control/registry.yaml
 	kubectl create -f ansible/control/k8s/registry.yaml
 	docker pull nginx
-	docker tag nginx ${public_master_dns}:30000/nginx
+	docker tag nginx $(public_master_dns):30000/nginx
 	sleep 10
-	-docker push ${public_master_dns}:30000/nginx
+	-docker push $(public_master_dns):30000/nginx
 
 nginx:
 	kubectl create -f ansible/control/k8s/nginx.yaml
 
 start:
-	@-${docker_run} --name ansible -d \
-	-v ${PWD}/ansible:/ansible \
-	-v ${PWD}/terraform:/terraform \
-	-v ${HOME}/.aws:/.aws \
-	-v ${HOME}/go:/go \
+	@-$(docker_run) --name ansible -d \
+	-v "$$(pwd)/ansible":"/ansible" \
+	-v "$$(pwd)/terraform":"/terraform" \
+	-v $(HOME)/.aws:/.aws \
+	-v $(HOME)/go:/go \
 	yangand/kubernetes_ansible tail -f /dev/null
 
 stop:
@@ -64,23 +64,23 @@ run_ansible = \
 	-i /ansible/install/inventory.yaml
 
 python:
-	@${run_ansible} /ansible/install/install_python.yaml
+	@$(run_ansible) /ansible/install/install_python.yaml
 
 containerd:
-	@${run_ansible} /ansible/control/install_containerd.yaml
+	@$(run_ansible) /ansible/control/install_containerd.yaml
 
 network:
-	@${run_ansible} /ansible/control/install_network.yaml
+	@$(run_ansible) /ansible/control/install_network.yaml
 
 k8s:
-	@${run_ansible} /ansible/control/install_k8s.yaml
+	@$(run_ansible) /ansible/control/install_k8s.yaml
 
 kubeadm:
-	@${run_ansible} /ansible/control/kubeadm_init.yaml /ansible/control/kubeadm_join.yaml /ansible/control/yq.yaml
+	@$(run_ansible) /ansible/control/kubeadm_init.yaml /ansible/control/kubeadm_join.yaml /ansible/control/yq.yaml
 	@$(MAKE) local_kubectl
 
 local_kubectl:
-	@${run_ansible} /ansible/control/user_admin.yaml
+	@$(run_ansible) /ansible/control/user_admin.yaml
 	kubectl config set-cluster kubernetes --server=https://$(public_master_ip):6443
 	kubectl config set-cluster kubernetes --certificate-authority=ansible/ca.crt --embed-certs=true
 	kubectl config set-credentials yangand --client-certificate=ansible/yangand.crt  --client-key=ansible/yangand.key --embed-certs=true
@@ -90,14 +90,16 @@ local_kubectl:
 	@rm ansible/yangand.key
 	@rm ansible/ca.crt
 
+helm:
+	$(run_ansible) /ansible/control/install_helm.yaml
+
 install: python containerd network k8s kubeadm
-	${run_ansible} /ansible/control/install_helm.yaml
 
 reset:
-	@${run_ansible} /ansible/reset/reset.yaml
+	@$(run_ansible) /ansible/reset/reset.yaml
 
 kubernetes_git:
-	${run_ansible} /ansible/control/git.yaml
+	$(run_ansible) /ansible/control/git.yaml
 
 clean:
 	docker image prune -a
