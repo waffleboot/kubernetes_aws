@@ -2,7 +2,7 @@
 // https://learn.hashicorp.com/terraform/getting-started/build#configuration
 
 locals {
-  ami = "ami-0b7937aeb16a7eb94"
+  ami = "ami-0363142d8c97b94c8"
 }
 
 provider "aws" {
