@@ -42,7 +42,7 @@ registry:
 	-docker push $(public_master_dns):30000/nginx
 
 nginx:
-	kubectl create -f ansible/control/k8s/nginx.yaml
+	sed "s:public_master_dns:${public_master_dns}:g" ansible/control/k8s/nginx.yaml | kubectl create -f -
 
 start:
 	@-$(docker_run) --name ansible -d \
