@@ -20,6 +20,24 @@
       template:
         src: /ansible/control/mynet/bridge/mynet.conf
         dest: /etc/cni/net.d/mynet.conflist
+- hosts: master
+  gather_facts: no
+  become: no
+  tasks:
+    - name: podCIDR
+      replace:
+        path: /etc/cni/net.d/mynet.conflist
+        regexp: "podCIDR"
+        replace: "10.10.1.0/24"
+- hosts: worker
+  gather_facts: no
+  become: no
+  tasks:
+    - name: podCIDR
+      replace:
+        path: /etc/cni/net.d/mynet.conflist
+        regexp: "podCIDR"
+        replace: "10.10.2.0/24"
 - hosts: all
   gather_facts: no
   become: yes
